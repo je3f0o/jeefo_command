@@ -1,0 +1,25 @@
+{
+  "name": "jeefo_command",
+  "version": "0.0.1",
+  "description": "Ember-CLI like command line arguments parser",
+  "author": {
+    "name": "je3f0o",
+    "email": "je3f0o@gmail.com"
+  },
+  "homepage": "https://github.com/je3f0o/jeefo_command",
+  "license": "MIT",
+  "copyright": "2017",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/je3f0o/jeefo_command.git"
+  },
+  "keywords": [
+    "cli",
+    "jeefo",
+    "command"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
