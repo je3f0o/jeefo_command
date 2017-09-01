@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2017-09-01
+* Updated at  : 2017-09-02
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -108,16 +108,19 @@ Command.prototype = {
 		var result = `${ cli_name } ${ this.name }`;
 
 		if (this.available_options.length) {
-			result += ` ${ style("<options...>", "cyan") }\n`;
-			result += `  ${ this.description }\n`;
+			result += ` ${ style("<options...>", "cyan") }`;
+		}
 
-			if (this.aliases) {
-				result += style(`  aliases: ${ this.aliases.join(", ") }\n`, "gray");
-			}
-
-			result += this.available_options.map(o => o.to_string()).join("\n");
-		} else {
+		if (this.description) {
 			result += `\n  ${ this.description }`;
+		}
+
+		if (this.aliases) {
+			result += style(`\n  aliases: ${ this.aliases.join(", ") }`, "gray");
+		}
+
+		if (this.available_options.length) {
+			result += this.available_options.map(o => o.to_string()).join("\n");
 		}
 
 		return result;
