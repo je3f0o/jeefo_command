@@ -24,6 +24,7 @@ var Command = function (command) {
 	self.runner  = command.run;
 	self.hashes  = Object.create(null);
 	self.options = {};
+	self.aliases = command.aliases;
 
 	self.available_options = [];
 
@@ -109,6 +110,11 @@ Command.prototype = {
 		if (this.available_options.length) {
 			result += ` ${ style("<options...>", "cyan") }\n`;
 			result += `  ${ this.description }\n`;
+
+			if (this.aliases) {
+				result += style(`  aliases: ${ this.aliases.join(", ") }\n`, "gray");
+			}
+
 			result += this.available_options.map(o => o.to_string()).join("\n");
 		} else {
 			result += `\n  ${ this.description }`;

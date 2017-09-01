@@ -13,7 +13,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var style = require("./style");
+var style    = require("./style"),
+	is_array = Array.isArray;
 
 var Option = function (option) {
 	this.name       = option.name;
@@ -21,16 +22,25 @@ var Option = function (option) {
 	this.hash_array = [];
 
 	switch (option.type) {
-		case Boolean :
-			this.type = "Boolean";
+		case Array :
+			this.type = "Array";
 			break;
 		case String :
 			this.type = "String";
 			break;
+		case Boolean :
+			this.type = "Boolean";
+			break;
+		default:
+			if (is_array(option.type)) {
+				this.type  = "Enum";
+				this.enums = option.type;
+			}
 	}
 
 	this.default     = option.default;
 	this.has_default = option.default !== void 0;
+	this.description = option.description;
 };
 
 Option.prototype = {
@@ -53,6 +63,19 @@ Option.prototype = {
 			});
 			result += style(`\n    aliases: ${ aliases.join(", ") }`, "gray");
 		}
+
+		if (this.enums) {
+			result += style(`\n    Enum options: ${ this.enums.join(" | ") }`, "magenta");
+			/*
+			result += style(`\n    Enum options: `, "green");
+			result += style(this.enums.join(" | "), "magenta");
+			*/
+		}
+
+		if (this.description) {
+			result += `\n    ${ this.description }`;
+		}
+
 		return result;
 	},
 	add_hash : function (hash) {
