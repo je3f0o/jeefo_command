@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2017-09-02
+* Updated at  : 2017-09-21
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -116,7 +116,7 @@ Command.prototype = {
 		}
 
 		if (this.aliases) {
-			result += style(`\n  aliases: ${ this.aliases.join(", ") }`, "gray");
+			result += style(`\n  aliases: ${ this.aliases.join(", ") }\n`, "gray");
 		}
 
 		if (this.available_options.length) {
