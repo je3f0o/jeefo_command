@@ -1,6 +1,6 @@
 {
   "name": "jeefo_command",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Ember-CLI like command line arguments parser",
   "author": {
     "name": "je3f0o",
@@ -10,7 +10,13 @@
   "license": "MIT",
   "copyright": "2017",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha \"specs/**/*_specs.js\"",
+    "test_command": "./node_modules/mocha/bin/mocha specs/command_specs.js",
+    "test_command_manager": "./node_modules/mocha/bin/mocha specs/command_manager_specs.js",
+    "test_options": "./node_modules/mocha/bin/mocha specs/options/*_specs.js",
+    "test_validators": "./node_modules/mocha/bin/mocha specs/validators/*_specs.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/je3f0o/jeefo_command.git"
@@ -18,8 +24,12 @@
   "keywords": [
     "cli",
     "jeefo",
-    "command"
+    "command",
+    "jeefo_command"
   ],
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "expect": "^23.6.0"
+  }
 }

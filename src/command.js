@@ -1,113 +1,282 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2017-09-21
+* Updated at  : 2019-01-10
 * Author      : jeefo
 * Purpose     :
 * Description :
 _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:start
+"use strict";
 
-/* globals -Option */
+/* globals */
 /* exported */
 
 // ignore:end
 
-var style  = require("./style"),
-	Option = require("./option");
+var style                      = require("./misc/style"),
+	HashTable                  = require("./hash_table"),
+	object_freeze              = require("./object_freeze"),
 
-var Command = function (command) {
-	var self = this;
+	IBaseOption                = require("./options/i_base_option"),
+	StringOption               = require("./options/string_option"),
+	NumberOption               = require("./options/number_option"),
+	BooleanOption              = require("./options/boolean_option"),
+	EnumerationOption          = require("./options/enumeration_option"),
 
-	self.args    = [];
-	self.name    = command.name;
-	self.runner  = command.run;
-	self.hashes  = Object.create(null);
-	self.options = {};
-	self.aliases = command.aliases;
+	ArrayValidator             = require("./validators/array_validator"),
+	StringValidator            = require("./validators/string_validator"),
+	NumberValidator            = require("./validators/number_validator"),
+	ObjectValidator            = require("./validators/object_validator"),
+	FunctionValidator          = require("./validators/function_validator"),
+	StringsOfArrayValidator    = require("./validators/strings_of_array_validator"),
 
-	self.available_options = [];
+	InvalidArgumentException   = require("./exceptions/invalid_argument_exception"),
+	argument_validator_factory = require("./validators/argument_validator_factory");
 
-	if (command.options) {
-		command.options.forEach(o => {
-			var option = new Option(o);
+var CONSTRUCTOR_NAME = "Command";
 
-			self.map(`--${ o.name }`, option);
-			
-			if (o.aliases) {
-				var i = o.aliases.length;
-				while (i--) {
-					self.map(`-${ o.aliases[i] }`, option);
-				}
+var object_create             = Object.create,
+	description_validator     = new StringValidator({ trim : true, define : false, nullable : true }),
+	required_string_validator = new StringValidator({ trim : true }),
+	required_number_validator = new NumberValidator(),
+	array_validator           = new ArrayValidator(),
+	object_validator          = new ObjectValidator(),
+	aliases_validator         = new StringsOfArrayValidator({ define : false, nullable : true, trim : true });
+
+var name_argument_validator        = argument_validator_factory(CONSTRUCTOR_NAME, "name"       , 0, required_string_validator);
+var description_argument_validator = argument_validator_factory(CONSTRUCTOR_NAME, "description", 1, description_validator);
+var execute_fn_argument_validator  = argument_validator_factory(CONSTRUCTOR_NAME, "execute_fn" , 2, new FunctionValidator());
+
+function Command (name, description, execute_fn) {
+	object_freeze(this, "name", name_argument_validator(name));
+	this.description = description_argument_validator(description);
+	this.execute     = execute_fn_argument_validator(execute_fn);
+
+	var _options            = object_create(null),
+		_aliases_map        = object_create(null),
+		_options_hash_table = new HashTable(),
+		_aliases_hash_table = new HashTable();
+	
+	// Private methods
+	// {{{1 .add_option(option_definition);
+	this.add_option = function (option_definition) {
+		var type, name, option, aliases;
+
+		// {{{2 Validating: option
+		object_validator.validate(option_definition, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+					"option_definition", 0, option_definition, err.message);
+			}
+		});
+
+		// {{{2 Validating: option.type
+		required_string_validator.validate(option_definition.type, (err, result_value) => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+					"option_definition.type", 0, option_definition.type, err.message);
+			}
+			type = result_value.toLowerCase();
+
+			switch (type) {
+				case "string" :
+				case "number" :
+				case "bool" :
+				case "boolean" :
+				case "enum" :
+				case "enumeration" :
+					break;
+				default:
+					throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+						"option_definition.type", 0, type, "not a valid option type");
+			}
+		});
+
+		// {{{2 Validating: option.name
+		required_string_validator.validate(option_definition.name, (err, result_value) => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+					"option_definition.name", 0, option_definition.name, err.message);
+			}
+			name = result_value;
+
+			if (_options_hash_table.has(`--${ name }`)) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+					"option_definition.name", 0, name, "duplicated option name");
+			}
+		});
+
+		// {{{2 Validating: option.aliases
+		aliases_validator.validate(option_definition.aliases, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+					"option_definition.aliases", 0, option_definition.aliases, err.message);
+			}
+		});
+		// }}}2
+
+		switch (type) {
+			case "string" :
+				option = new StringOption(name, option_definition.default);
+				break;
+			case "number" :
+				option = new NumberOption(name, option_definition.default);
+				break;
+			case "bool" :
+			case "boolean" :
+				option = new BooleanOption(name, option_definition.default);
+				break;
+			case "enum" :
+			case "enumeration" :
+				option = new EnumerationOption(name, option_definition.list, option_definition.default);
+				break;
+		}
+		_options_hash_table.add(option.name, option);
+		object_freeze(_options, name, function () { return option.value; });
+
+		// {{{2 aliases
+		aliases = _aliases_map[option.name] = [];
+		object_freeze(option, "aliases", function () { return aliases.concat(); });
+
+		(option_definition.aliases || []).forEach((alias_name, index) => {
+			var prefixed_alias_name = `-${ alias_name }`;
+
+			if (_aliases_hash_table.has(prefixed_alias_name)) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+					`option_definition.aliases[${ index }]`, 0, alias_name, "duplicated alias name");
 			}
 
-			self.available_options.push(option);
+			aliases.push(prefixed_alias_name);
+			_aliases_hash_table.add(prefixed_alias_name, option);
 		});
-	}
+		// }}}2
 
-	self.description = command.description;
-};
+		return option;
+	};
+
+	// {{{1 .get_options();
+	this.get_options = function () {
+		return _options;
+	};
+
+	// {{{1 .set_alias(alias, option);
+	this.set_alias = function (alias_name, option) {
+		// {{{2 alias_name
+		required_string_validator.validate(alias_name, (err, result_value) => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
+					"alias_name", 0, alias_name, err.message);
+			}
+
+			alias_name = `-${ result_value }`;
+			if (_aliases_hash_table.has(alias_name)) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
+					"alias_name", 0, option, "duplicated alias name");
+			}
+		});
+
+		// {{{2 option
+		object_validator.validate(option, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
+					"option", 1, option, err.message);
+			}
+
+			if (option instanceof IBaseOption === false ||
+				option !== _options_hash_table.get_value(option.name)
+			) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
+					"option", 1, option, "not a valid option");
+			}
+		});
+		// }}}2
+
+		_aliases_hash_table.add(alias_name, option);
+		_aliases_map[option.name].push(alias_name);
+	};
+
+	// {{{1 .set_options(args, index);
+	this.set_options = function (args, index) {
+		var option, option_name;
+
+		array_validator.validate(args, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_options`,
+					"args", 0, args, err.message);
+			}
+		});
+
+		required_number_validator.validate(index, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_options`,
+					"index", 1, index, err.message);
+			}
+		});
+
+		for (; index < args.length; ++index) {
+			option_name = args[index];
+
+			if (_options_hash_table.has(option_name)) {
+				option = _options_hash_table.get_value(option_name);
+			} else if (_aliases_hash_table.has(option_name)) {
+				option = _aliases_hash_table.get_value(option_name);
+			} else {
+				return index;
+			}
+
+			index = option.initialize(args, index + 1);
+		}
+
+		return index;
+	};
+
+	// {{{1 .get_options_length();
+	this.get_options_length = function () {
+		return _options_hash_table.get_length();
+	};
+
+	// {{{1 .get_option();
+	this.get_option = function (option_name) {
+		if (_options_hash_table.has(`--${ option_name }`)) {
+			return _options_hash_table.get_value(`--${ option_name }`);
+		}
+
+		throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.get_option`,
+			"option_name", 0, option_name, "not a valid option name");
+	};
+
+	// {{{1 .get_option_by_alias_name();
+	this.get_option_by_alias_name = function (alias_name) {
+		if (_aliases_hash_table.has(`-${ alias_name }`)) {
+			return _aliases_hash_table.get_value(`-${ alias_name }`);
+		}
+
+		throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.get_option_by_alias_name`,
+			"alias_name", 0, alias_name, "not a valid alias name");
+	};
+
+	// {{{1 .each(iterator)
+	this.each = function (interator) {
+		_options_hash_table.each(interator);
+	};
+
+	// {{{1 .map(iterator)
+	this.map = function (interator) {
+		return _options_hash_table.map(interator);
+	};
+	// }}}1
+}
 
 Command.prototype = {
-	add_args : function (args) {
-		this.args   = this.args.concat(args);
-		this.is_set = true;
-	},
-	parse : function () {
-		if (! this.is_set) { return; }
+	aliases : [],
 
-		var i = 0, args = this.args, options = this.options,
-			option, next_option;
+	help : function (application_name) {
+		var result  = `${ application_name } ${ this.name }`,
+			aliases = this.aliases,
+			options = this.map(option => option);
 
-		this.args = [];
-
-		for (; i < args.length; ++i) {
-			option      = this.hashes[args[i]];
-			next_option = this.hashes[args[i + 1]];
-
-			if (option) {
-				if (next_option) {
-					options[option.name] = option.default;
-				} else {
-					i += 1;
-					if (i < args.length) {
-						options[option.name] = args[i];
-					} else {
-						options[option.name] = option.default;
-					}
-				}
-			} else {
-				this.args.push(args[i]);
-			}
-		}
-
-		i = this.available_options.length;
-		while (i--) {
-			option = this.available_options[i];
-			if (options[option.name] === void 0) {
-				if (option.has_default) {
-					options[option.name] = option.default;
-				}
-			}
-		}
-	},
-	reset : function () {
-		this.args   = [];
-		this.is_set = false;
-	},
-	run : function (cli) {
-		if (! this.is_set) { return; }
-
-		this.runner.call(cli, this.options, this.args);
-	},
-	map : function (hash, option) {
-		this.hashes[hash] = option;
-		option.add_hash(hash);
-	},
-	help : function (cli_name) {
-		var result = `${ cli_name } ${ this.name }`;
-
-		if (this.available_options.length) {
+		if (options.length) {
 			result += ` ${ style("<options...>", "cyan") }`;
 		}
 
@@ -115,12 +284,12 @@ Command.prototype = {
 			result += `\n  ${ this.description }`;
 		}
 
-		if (this.aliases) {
-			result += style(`\n  aliases: ${ this.aliases.join(", ") }\n`, "gray");
+		if (aliases.length) {
+			result += style(`\n  ${ aliases.length === 1 ? "alias" : "aliases" }: ${ this.aliases.join(", ") }`, "gray");
 		}
 
-		if (this.available_options.length) {
-			result += this.available_options.map(o => o.to_string()).join("\n");
+		if (options.length) {
+			result += `\n${ options.map(option => option.to_string()).join("\n") }`;
 		}
 
 		return result;
@@ -128,3 +297,53 @@ Command.prototype = {
 };
 
 module.exports = Command;
+// ignore:start
+
+if (require.main === module) {
+	var c = new Command("build", "build source codes.", function (options) {
+		console.log("Hello", options);
+	}), o;
+
+	c.add_option({
+		type : "String ",
+		name : "required",
+		aliases : ['r']
+	});
+	o = c.add_option({
+		type : "String ",
+		name : "main",
+		default : "index.js",
+		aliases : ['m']
+	});
+	c.add_option({
+		type : "bool ",
+		name : "compile",
+		default : false,
+		aliases : ['c']
+	});
+	c.add_option({
+		type : "number ",
+		name : "level",
+		default : 0,
+		aliases : ['l']
+	});
+	c.add_option({
+		type : "enum ",
+		name : "type",
+		list : ["app", "dll"],
+		aliases : ['t']
+	});
+
+	console.log(o);
+
+	var args = process.argv,
+		index = 2;
+	
+	c.set_options(args, index);
+
+	console.log(c);
+	console.log(c.help("jeefo"));
+	console.log(c.get_options());
+}
+
+// ignore:end
