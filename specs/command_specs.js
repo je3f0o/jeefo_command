@@ -402,20 +402,18 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .get_options()
 	describe(".get_options()", () => {
-		var value = "hello world",
-			command = new Command(NAME, null, execute_fn),
-			options = command.get_options();
+		var value   = "hello world",
+			command = new Command(NAME, null, execute_fn);
 
 		command.add_option({ type : "string", name : "command", aliases : ['c'] });
 
 		it(`Should be got undefined`, () => {
-			expect(options.command).toBe(undefined);
+			expect(command.get_options().command).toBe(undefined);
 		});
 
 		it(`Should be got '${ value }'`, () => {
 			command.set_options(['-c', value], 0);
-			expect(options.command).toBe(value);
-			expect(options.command).toBe(value);
+			expect(command.get_options().command).toBe(value);
 		});
 	});
 
