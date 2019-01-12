@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : hello_world.js
 * Created at  : 2017-08-31
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-13
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -15,6 +15,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 var pkg            = require("../package"),
+	exit           = require("../helpers/exit"),
 	style          = require("../src/misc/style"),
 	CommandManager = require("../src/command_manager");
 
@@ -31,16 +32,17 @@ cli.register({
         { name: 'minify'         , type: "bool"   ,                         default: false                      } ,
     ],
     execute : function () {
-		console.log("Build command called");
+		console.log("Build command executed.");
 	}
 });
 
 cli.register({
 	name        : "version",
 	aliases     : ['v'],
-    description : "Print the current version.",
+    description : "Print current version and exit.",
     execute : function () {
 		console.log(pkg.version);
+		exit();
 	}
 });
 
@@ -75,19 +77,19 @@ cli.register({
 			} else if (command_manager.has_alias(options.command)) {
 				command = command_manager.get_command_by_alias_name(options.command);
 			} else {
-				var message = [
+				exit([
 					style("The specified ", "red"),
 					style(options.command, "cyan"),
-					style(` command is not registered. For available options, see \`${ cli.application_name } help\`.`, "red"),
-				].join('');
-				console.error(message);
-				return;
+					style(` command is not registered. For available options, see \`${ application_name } help\`.`, "red"),
+				].join(''));
 			}
 
 			console.log(command.help(application_name));
+			exit();
 		} else {
 			var result = command_manager.map(command => command.help(application_name)).join("\n\n") + "\n";
 			console.log(result);
+			exit();
 		}
 	}
 });
@@ -96,12 +98,10 @@ try {
 	cli.execute_commands(process.argv, 2);
 } catch (e) {
 	if (e.error_message === "not a valid command name") {
-		var message = [
+		exit([
 			style("The specified ", "red"),
 			style(e.parameter_value, "cyan"),
 			style(` command is invalid. For available options, see \`${ cli.application_name } help\`.`, "red"),
-		].join('');
-
-		console.error(message);
+		].join(''));
 	}
 }
