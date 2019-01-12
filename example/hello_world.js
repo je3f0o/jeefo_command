@@ -21,6 +21,13 @@ var pkg            = require("../package"),
 
 var cli = new CommandManager(pkg.name);
 
+function generate_execute_function (command_name) {
+	return function execute () {
+		console.log(`${ command_name } command executed.`);
+		console.log(`${ command_name } command is for only demonstration purpose. It is not implemented.`);
+	};
+}
+
 cli.register({
 	name        : "build",
 	aliases     : ['b'],
@@ -31,19 +38,7 @@ cli.register({
         { name: 'environment'    , type: "enum"   , list : ["dev", "prod"], default: "dev"     , aliases: ['e'] } ,
         { name: 'minify'         , type: "bool"   ,                         default: false                      } ,
     ],
-    execute : function () {
-		console.log("Build command executed.");
-	}
-});
-
-cli.register({
-	name        : "version",
-	aliases     : ['v'],
-    description : "Print current version and exit.",
-    execute : function () {
-		console.log(pkg.version);
-		exit();
-	}
+    execute : generate_execute_function("build")
 });
 
 cli.register({
@@ -56,43 +51,12 @@ cli.register({
         { name: 'component' , type: "  String  " , aliases: ['c'] } ,
         { name: 'directive' , type: "String"     , aliases: ['d'] } ,
     ],
-    execute : function () {
-		console.log("Generate command is for only demonstration purpose. It is not implemented.");
-	}
+    execute : generate_execute_function("generate")
 });
 
-cli.register({
-	name        : "help",
-	aliases     : ['h', '-h', '--help', '?'],
-    description : "Shows this help messages",
-    options     : [
-        { name: 'option' , type: "String", aliases: ['o'] } ,
-        { name: 'command', type: "String", aliases: ['c'] } ,
-    ],
-    execute : function (options, command_manager, application_name) {
-		var command;
-		if (options.command) {
-			if (command_manager.has_command(options.command)) {
-				command = command_manager.get_command(options.command);
-			} else if (command_manager.has_alias(options.command)) {
-				command = command_manager.get_command_by_alias_name(options.command);
-			} else {
-				exit([
-					style("The specified ", "red"),
-					style(options.command, "cyan"),
-					style(` command is not registered. For available options, see \`${ application_name } help\`.`, "red"),
-				].join(''));
-			}
-
-			console.log(command.help(application_name));
-			exit();
-		} else {
-			var result = command_manager.map(command => command.help(application_name)).join("\n\n") + "\n";
-			console.log(result);
-			exit();
-		}
-	}
-});
+cli.register(require("./commands/version_command"));
+cli.register(require("./commands/print_command"));
+cli.register(require("./commands/help_command"));
 
 try {
 	cli.execute_commands(process.argv, 2);

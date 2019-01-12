@@ -14,7 +14,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-const style = require("./src/misc/style");
+const style = require("../src/misc/style");
 
 module.exports = function exit_required_option (option_name) {
 	console.error([

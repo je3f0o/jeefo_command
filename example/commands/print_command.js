@@ -14,9 +14,9 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-const style                = require("jeefo_command/src/misc/style"),
+const style                = require("../../src/misc/style"),
 	  exit                 = require("../../helpers/exit"),
-	  exit_required_option = require("../../helpers/exit");
+	  exit_required_option = require("../../helpers/exit_required_option");
 
 module.exports = {
 	name        : "print",
