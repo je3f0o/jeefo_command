@@ -1,6 +1,6 @@
 {
   "name": "jeefo_command",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Ember-CLI like command line arguments parser",
   "author": {
     "name": "je3f0o",

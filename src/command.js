@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-12
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -53,8 +53,7 @@ function Command (name, description, execute_fn) {
 	this.description = description_argument_validator(description);
 	this.execute     = execute_fn_argument_validator(execute_fn);
 
-	var _options            = object_create(null),
-		_aliases_map        = object_create(null),
+	var _aliases_map        = object_create(null),
 		_options_hash_table = new HashTable(),
 		_aliases_hash_table = new HashTable();
 	
@@ -133,7 +132,6 @@ function Command (name, description, execute_fn) {
 				break;
 		}
 		_options_hash_table.add(option.name, option);
-		object_freeze(_options, name, function () { return option.value; });
 
 		// {{{2 aliases
 		aliases = _aliases_map[option.name] = [];
@@ -157,7 +155,11 @@ function Command (name, description, execute_fn) {
 
 	// {{{1 .get_options();
 	this.get_options = function () {
-		return _options;
+		var options = object_create(null);
+		_options_hash_table.each(option => {
+			options[option.name.substring(2)] = option.value;
+		});
+		return options;
 	};
 
 	// {{{1 .set_alias(alias, option);

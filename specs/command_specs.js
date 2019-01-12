@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_specs.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-12
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -408,10 +408,6 @@ describe("class Command (name, description, execute_fn)", () => {
 
 		command.add_option({ type : "string", name : "command", aliases : ['c'] });
 
-		it(`Should be return singleton instance`, () => {
-			expect(command.get_options()).toBe(command.get_options());
-		});
-
 		it(`Should be got undefined`, () => {
 			expect(options.command).toBe(undefined);
 		});
@@ -419,7 +415,7 @@ describe("class Command (name, description, execute_fn)", () => {
 		it(`Should be got '${ value }'`, () => {
 			command.set_options(['-c', value], 0);
 			expect(options.command).toBe(value);
-			expect(Object.keys(options)[0]).toBe("command");
+			expect(options.command).toBe(value);
 		});
 	});
 
