@@ -1,6 +1,6 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name   : string_option_specs.js
-* Created at  : 2018-12-31
+* File Name   : file_path_option_specs.js
+* Created at  : 2019-01-13
 * Updated at  : 2019-01-13
 * Author      : jeefo
 * Purpose     :
@@ -15,7 +15,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 var IBaseOption                     = require("../../src/options/i_base_option"),
-	StringOption                    = require("../../src/options/string_option"),
+	FilePathOption                  = require("../../src/options/file_path_option"),
 	argument_test_factory           = require("../argument_test_factory"),
 
 	test_instance                   = require("../testers/test_instance"),
@@ -24,14 +24,14 @@ var IBaseOption                     = require("../../src/options/i_base_option")
 	test_type_and_name              = require("../testers/test_type_and_name"),
 	test_invalid_argument_exception = require("../testers/test_invalid_argument_exception");
 
-const NAME          = "name",
-	  TYPE          = "String",
-	  ALIASES       = ['n'],
-	  DEFAULT_VALUE = "app",
+const NAME          = "main",
+	  TYPE          = "FilePath",
+	  ALIASES       = ['m'],
+	  DEFAULT_VALUE = "index.js",
 
 	  PARAMS = ["name", "default_value"],
 
-	  ARGUMENTS = [`--${ NAME }`, "application", `-${ ALIASES[0] }`, "application.js"];
+	  ARGUMENTS = [`--${ NAME }`, "main.js", `-${ ALIASES[0] }`, "source.js"];
 
 describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 	var name_argument_test             = argument_test_factory(PARAMS[0], 0);
@@ -40,38 +40,38 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
 		name_argument_test("undefined", function () {
-			return new StringOption();
+			return new FilePathOption();
 		}),
 
 		name_argument_test("null", function () {
-			return new StringOption(null);
+			return new FilePathOption(null);
 		}),
 
 		name_argument_test("not a string", function () {
-			return new StringOption(3.14);
+			return new FilePathOption(3.14);
 		}),
 
 		name_argument_test("an empty string", function () {
-			return new StringOption("       ");
+			return new FilePathOption("       ");
 		}),
 
 		// {{{1 arg[1] : default_value
 		default_value_argument_test("not a string", function () {
-			return new StringOption(NAME, 3.14);
+			return new FilePathOption(NAME, 3.14);
 		}),
 
 		default_value_argument_test("an empty string", function () {
-			return new StringOption(NAME, "   ");
+			return new FilePathOption(NAME, "   ");
 		}),
 		// }}}1
 	];
 
 	constructor_arguments_test_cases.forEach(test_invalid_argument_exception);
 
-	var option = new StringOption(NAME, DEFAULT_VALUE, ALIASES);
+	var option = new FilePathOption(NAME, DEFAULT_VALUE, ALIASES);
 
 	test_instance(option, [
-		{ name : "StringOption", constructor_fn : StringOption },
+		{ name : "FilePathOption", constructor_fn : FilePathOption },
 		{ name : "IBaseOption", constructor_fn : IBaseOption },
 	]);
 
@@ -98,14 +98,14 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 		// {{{1 .value: undefined
 		{
 			create_instance : function () {
-				return new StringOption(NAME);
+				return new FilePathOption(NAME);
 			},
 		},
 
 		// {{{1 .value: 'index.js'
 		{
 			create_instance : function () {
-				return new StringOption(NAME, DEFAULT_VALUE);
+				return new FilePathOption(NAME, DEFAULT_VALUE);
 			},
 			got   : `'${ DEFAULT_VALUE }'`,
 			value : DEFAULT_VALUE

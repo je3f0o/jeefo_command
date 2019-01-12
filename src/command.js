@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-12
+* Updated at  : 2019-01-13
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -22,7 +22,9 @@ var style                      = require("./misc/style"),
 	StringOption               = require("./options/string_option"),
 	NumberOption               = require("./options/number_option"),
 	BooleanOption              = require("./options/boolean_option"),
+	FilePathOption             = require("./options/file_path_option"),
 	EnumerationOption          = require("./options/enumeration_option"),
+	DirectoryPathOption        = require("./options/directory_path_option"),
 
 	ArrayValidator             = require("./validators/array_validator"),
 	StringValidator            = require("./validators/string_validator"),
@@ -85,6 +87,11 @@ function Command (name, description, execute_fn) {
 				case "boolean" :
 				case "enum" :
 				case "enumeration" :
+				case "file" :
+				case "filepath" :
+				case "dir" :
+				case "directory" :
+				case "directorypath" :
 					break;
 				default:
 					throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
@@ -129,6 +136,15 @@ function Command (name, description, execute_fn) {
 			case "enum" :
 			case "enumeration" :
 				option = new EnumerationOption(name, option_definition.list, option_definition.default);
+				break;
+			case "file" :
+			case "filepath" :
+				option = new FilePathOption(name, option_definition.default);
+				break;
+			case "dir" :
+			case "directory" :
+			case "directorypath" :
+				option = new DirectoryPathOption(name, option_definition.default);
 				break;
 		}
 		_options_hash_table.add(option.name, option);
@@ -308,32 +324,37 @@ if (require.main === module) {
 
 	c.add_option({
 		type : "String ",
-		name : "required",
-		aliases : ['r']
+		name : "name",
+		aliases : ['n']
 	});
 	o = c.add_option({
-		type : "String ",
+		type : "file",
 		name : "main",
 		default : "index.js",
 		aliases : ['m']
 	});
 	c.add_option({
 		type : "bool ",
-		name : "compile",
+		name : "include-core",
 		default : false,
 		aliases : ['c']
 	});
 	c.add_option({
 		type : "number ",
-		name : "level",
+		name : "optimization-level",
 		default : 0,
 		aliases : ['l']
 	});
 	c.add_option({
-		type : "enum ",
+		type : "enum",
 		name : "type",
 		list : ["app", "dll"],
 		aliases : ['t']
+	});
+	c.add_option({
+		type : "dir",
+		name : "output-directory",
+		aliases : ['d']
 	});
 
 	console.log(o);

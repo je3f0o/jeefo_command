@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_specs.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-12
+* Updated at  : 2019-01-13
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -16,13 +16,15 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 var expect                          = require("expect"),
 	Command                         = require("../src/command"),
+	argument_test_factory           = require("./argument_test_factory"),
 
 	IBaseOption                     = require("../src/options/i_base_option"),
 	StringOption                    = require("../src/options/string_option"),
 	NumberOption                    = require("../src/options/number_option"),
 	BooleanOption                   = require("../src/options/boolean_option"),
+	FilePathOption                  = require("../src/options/file_path_option"),
 	EnumerationOption               = require("../src/options/enumeration_option"),
-	argument_test_factory           = require("./argument_test_factory"),
+	DirectoryPathOption             = require("../src/options/directory_path_option"),
 
 	test_readonly                   = require("./testers/test_readonly"),
 	test_invalid_argument_exception = require("./testers/test_invalid_argument_exception");
@@ -213,13 +215,13 @@ describe("class Command (name, description, execute_fn)", () => {
 				cases : [
 					{
 						type : "  String  ",
-						name : "required",
+						name : "name",
 					},
 					{
 						type    : "string",
-						name    : "optional",
-						default : "value",
-						aliases : ['o']
+						name    : "name",
+						default : "application",
+						aliases : ['n']
 					},
 				]
 			},
@@ -231,13 +233,13 @@ describe("class Command (name, description, execute_fn)", () => {
 				cases : [
 					{
 						type : "  Number  ",
-						name : "required",
+						name : "optimization-level",
 					},
 					{
 						type    : "number",
-						name    : "optional",
-						default : 3.14,
-						aliases : ['o']
+						name    : "optimization-level",
+						default : 3,
+						aliases : ['l']
 					},
 				]
 			},
@@ -249,13 +251,13 @@ describe("class Command (name, description, execute_fn)", () => {
 				cases : [
 					{
 						type : "  Boolean  ",
-						name : "required",
+						name : "minify",
 					},
 					{
 						type    : "bool",
-						name    : "optional",
+						name    : "minify",
 						default : true,
-						aliases : ['o']
+						aliases : ['m']
 					},
 				]
 			},
@@ -267,15 +269,56 @@ describe("class Command (name, description, execute_fn)", () => {
 				cases : [
 					{
 						type : "  Enumeration  ",
-						name : "required",
-						list : ['a','b','c']
+						name : "type",
+						list : ['app', 'dll']
 					},
 					{
 						type    : "enum",
-						name    : "optional",
-						list    : ['a','b','c'],
-						default : 'c',
-						aliases : ['o']
+						name    : "type",
+						list    : ['app', 'dll'],
+						default : 'dll',
+						aliases : ['t']
+					},
+				]
+			},
+
+			// {{{2 FilePath Option
+			{
+				type : "FilePath",
+				constructor : FilePathOption,
+				cases : [
+					{
+						type : "  FilePath  ",
+						name : "main",
+					},
+					{
+						type    : "file",
+						name    : "main",
+						default : 'value',
+						aliases : ['m']
+					},
+				]
+			},
+
+			// {{{2 DirectoryPath Option
+			{
+				type : "DirectoryPath",
+				constructor : DirectoryPathOption,
+				cases : [
+					{
+						type : "  DirectoryPath  ",
+						name : "destinition",
+					},
+					{
+						type    : "directory",
+						name    : "destinition",
+						default : 'js',
+					},
+					{
+						type    : "dir",
+						name    : "destinition",
+						default : 'js',
+						aliases : ['d']
 					},
 				]
 			},
@@ -289,7 +332,7 @@ describe("class Command (name, description, execute_fn)", () => {
 
 				if (test_case.aliases) {
 					test_case.aliases.forEach(alias_name => {
-						it(`Should be got an option{...} by alias name '${ alias_name }'`, () => {
+						it(`Should be got new ${ test_group.type }Option by alias name '${ alias_name }'`, () => {
 							expect(command.get_option_by_alias_name(alias_name)).toBe(option);
 						});
 					});
