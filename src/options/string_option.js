@@ -41,11 +41,11 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 
 	type : TYPE,
 
-	initialize : function (args, index) {
-		array_validator.validate(args, err => {
+	initialize : function (arguments_list, index) {
+		array_validator.validate(arguments_list, err => {
 			if (err) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.initialize`,
-					"args", 0, args, err.message);
+					"arguments_list", 0, arguments_list, err.message);
 			}
 		});
 		number_validator.validate(index, err => {
@@ -55,12 +55,12 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 			}
 		});
 
-		if (typeof args[index] !== "string") {
+		if (typeof arguments_list[index] !== "string") {
 			throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.initialize`,
-				`args[${ index }]`, 0, args[index], "not a string");
+				`arguments_list[${ index }]`, 0, arguments_list[index], "not a string");
 		}
 
-		this.value = args[index];
+		this.value = arguments_list[index];
 		return index;
 	},
 

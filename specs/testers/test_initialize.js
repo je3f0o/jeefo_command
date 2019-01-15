@@ -18,7 +18,7 @@ var expect                          = require("expect"),
 	test_invalid_argument_exception = require("../testers/test_invalid_argument_exception");
 
 module.exports = function test_initialize (instance, tests) {
-	describe(".initialize(argument_list, index)", () => {
+	describe(".initialize(arguments_list, index)", () => {
 		if (tests.invalid_cases) {
 			describe("Invalid cases", () => {
 				tests.invalid_cases.forEach(test_invalid_argument_exception);
@@ -29,7 +29,7 @@ module.exports = function test_initialize (instance, tests) {
 			tests.valid_cases.forEach(test_case => {
 				var args = test_case.args;
 
-				it(`Should be got ${ test_case.value } when => (argument_list = [${ args.map(arg => "'" + arg + "'") }]) and (index = ${ test_case.index })`, () => {
+				it(`Should be got ${ test_case.value } when => (arguments_list = [${ args.map(arg => "'" + arg + "'") }]) and (index = ${ test_case.index })`, () => {
 					var return_index = instance.initialize(args, test_case.index + 1);
 
 					expect(return_index).toBe(test_case.expected_index);

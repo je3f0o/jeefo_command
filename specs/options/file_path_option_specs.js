@@ -34,9 +34,9 @@ const NAME          = "main",
 	  ARGUMENTS = [`--${ NAME }`, "main.js", `-${ ALIASES[0] }`, "source.js"];
 
 describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
-	var name_argument_test             = argument_test_factory(PARAMS[0], 0);
-	var default_value_argument_test    = argument_test_factory(PARAMS[1], 1);
-	var args_argument_test          = argument_test_factory("args", 0);
+	var name_argument_test          = argument_test_factory(PARAMS[0], 0);
+	var default_value_argument_test = argument_test_factory(PARAMS[1], 1);
+	var args_argument_test          = argument_test_factory("arguments_list", 0);
 	var index_argument_test         = argument_test_factory("index", 1);
 
 	var constructor_arguments_test_cases = [
@@ -121,7 +121,7 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 					option.initialize([null], 0);
 				},
 				error_message  : "not a string",
-				argument_name  : "args[0]",
+				argument_name  : "arguments_list[0]",
 				argument_index : 0,
 				argument_value : null,
 			},

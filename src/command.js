@@ -217,13 +217,13 @@ function Command (name, description, execute_fn) {
 	};
 
 	// {{{1 .set_options(args, index);
-	this.set_options = function (args, index) {
+	this.set_options = function (arguments_list, index) {
 		var option, option_name;
 
-		array_validator.validate(args, err => {
+		array_validator.validate(arguments_list, err => {
 			if (err) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_options`,
-					"args", 0, args, err.message);
+					"arguments_list", 0, arguments_list, err.message);
 			}
 		});
 
@@ -234,8 +234,8 @@ function Command (name, description, execute_fn) {
 			}
 		});
 
-		for (; index < args.length; ++index) {
-			option_name = args[index];
+		for (; index < arguments_list.length; ++index) {
+			option_name = arguments_list[index];
 
 			if (_options_hash_table.has(option_name)) {
 				option = _options_hash_table.get_value(option_name);
@@ -245,7 +245,7 @@ function Command (name, description, execute_fn) {
 				return index;
 			}
 
-			index = option.initialize(args, index + 1);
+			index = option.initialize(arguments_list, index + 1);
 		}
 
 		return index;

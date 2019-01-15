@@ -532,10 +532,10 @@ describe("class Command (name, description, execute_fn)", () => {
 		});
 	});
 
-	// {{{1 .set_options(args, index)
-	describe(".set_options(args, index)", () => {
-		var args_test   = argument_test_factory("args"  , 0);
-		var index_test  = argument_test_factory("index" , 1);
+	// {{{1 .set_options(argument_list, index)
+	describe(".set_options(arguments_list, index)", () => {
+		var args_test   = argument_test_factory("arguments_list" , 0);
+		var index_test  = argument_test_factory("index"         , 1);
 
 		var test_cases = [
 			// {{{2 args

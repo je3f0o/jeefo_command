@@ -40,7 +40,7 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 	var name_argument_test             = argument_test_factory(PARAMS[0], 0);
 	var enumeration_list_argument_test = argument_test_factory(PARAMS[1], 1);
 	var default_value_argument_test    = argument_test_factory(PARAMS[2], 2);
-	var args_argument_test             = argument_test_factory("args", 0);
+	var args_argument_test             = argument_test_factory("arguments_list", 0);
 	var index_argument_test            = argument_test_factory("index", 1);
 
 	var constructor_arguments_test_cases = [
@@ -158,7 +158,7 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 					option.initialize(["error_input"], 0);
 				},
 				error_message  : "not a valid enumeration value",
-				argument_name  : "args[0]",
+				argument_name  : "arguments_list[0]",
 				argument_index : 0,
 				argument_value : "error_input",
 			},

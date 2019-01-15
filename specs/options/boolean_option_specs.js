@@ -35,7 +35,7 @@ const TYPE    = "Boolean",
 describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 	var name_argument_test          = argument_test_factory(PARAMS[0], 0);
 	var default_value_argument_test = argument_test_factory(PARAMS[1], 1);
-	var args_argument_test          = argument_test_factory("args", 0);
+	var argument_list_argument_test = argument_test_factory("arguments_list", 0);
 	var index_argument_test         = argument_test_factory("index", 1);
 
 	var constructor_arguments_test_cases = [
@@ -105,15 +105,15 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 		// {{{1 Invalid cases
 		invalid_cases : [
 			// {{{2 args
-			args_argument_test(undefined, "undefined", function () {
+			argument_list_argument_test(undefined, "undefined", function () {
 				var option = new BooleanOption(NAME);
 				option.initialize();
 			}),
-			args_argument_test(null, "null", function () {
+			argument_list_argument_test(null, "null", function () {
 				var option = new BooleanOption(NAME);
 				option.initialize(null);
 			}),
-			args_argument_test("error_input", "not an array", function (error_input) {
+			argument_list_argument_test("error_input", "not an array", function (error_input) {
 				var option = new BooleanOption(NAME);
 				option.initialize(error_input);
 			}),
@@ -125,7 +125,7 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 					option.initialize(["fasle"], 0);
 				},
 				error_message  : "not a boolean",
-				argument_name  : "args[0]",
+				argument_name  : "arguments_list[0]",
 				argument_index : 0,
 				argument_value : "fasle",
 			},

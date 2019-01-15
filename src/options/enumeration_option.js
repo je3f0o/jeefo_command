@@ -55,11 +55,11 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 
 	type : TYPE,
 
-	initialize : function (args, index) {
-		array_validator.validate(args, err => {
+	initialize : function (arguments_list, index) {
+		array_validator.validate(arguments_list, err => {
 			if (err) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.initialize`,
-					"args", 0, args, err.message);
+					"arguments_list", 0, arguments_list, err.message);
 			}
 		});
 		number_validator.validate(index, err => {
@@ -69,10 +69,10 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 			}
 		});
 
-		var value = args[index];
+		var value = arguments_list[index];
 		if (this.list.indexOf(value) === -1) {
 			throw new InvalidArgumentException(CONSTRUCTOR_NAME,
-				`args[${ index }]`, 0, value, "not a valid enumeration value");
+				`arguments_list[${ index }]`, 0, value, "not a valid enumeration value");
 		}
 
 		this.value = value;
