@@ -71,7 +71,7 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 
 		var value = arguments_list[index];
 		if (this.list.indexOf(value) === -1) {
-			throw new InvalidArgumentException(CONSTRUCTOR_NAME,
+			throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.initialize`,
 				`arguments_list[${ index }]`, 0, value, "not a valid enumeration value");
 		}
 
