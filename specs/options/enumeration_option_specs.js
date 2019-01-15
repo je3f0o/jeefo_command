@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : enumeration_option_specs.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -43,62 +43,62 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
-		name_argument_test("undefined", function () {
+		name_argument_test(undefined, "undefined", function () {
 			return new EnumerationOption();
 		}),
 
-		name_argument_test("null", function () {
+		name_argument_test(null, "null", function () {
 			return new EnumerationOption(null);
 		}),
 
-		name_argument_test("not a string", function () {
-			return new EnumerationOption(3.14);
+		name_argument_test(3.14, "not a string", function (error_input) {
+			return new EnumerationOption(error_input);
 		}),
 
-		name_argument_test("an empty string", function () {
-			return new EnumerationOption("       ");
+		name_argument_test("       ", "an empty string", function (error_input) {
+			return new EnumerationOption(error_input);
 		}),
 
 		// {{{1 arg[1] : enumeration_list
-		enumeration_list_argument_test("undefined", function () {
+		enumeration_list_argument_test(undefined, "undefined", function () {
 			return new EnumerationOption(NAME);
 		}),
 		
-		enumeration_list_argument_test("null", function () {
+		enumeration_list_argument_test(null, "null", function () {
 			return new EnumerationOption(NAME, null);
 		}),
 
-		enumeration_list_argument_test("not an array", function () {
-			return new EnumerationOption(NAME, "wrong_input");
+		enumeration_list_argument_test("error_input", "not an array", function (error_input) {
+			return new EnumerationOption(NAME, error_input);
 		}),
 
-		enumeration_list_argument_test("an empty array", function () {
-			return new EnumerationOption(NAME, []);
+		enumeration_list_argument_test([], "an empty array", function (error_input) {
+			return new EnumerationOption(NAME, error_input);
 		}),
 
-		enumeration_list_argument_test("has non string value", function () {
-			return new EnumerationOption(NAME, ["string", null]);
+		enumeration_list_argument_test(["string", null], "has non string value", function (error_input) {
+			return new EnumerationOption(NAME, error_input);
 		}),
 
-		enumeration_list_argument_test("has an empty string value", function () {
-			return new EnumerationOption(NAME, ["string", "   "]);
+		enumeration_list_argument_test(["string", "   "], "has an empty string value", function (error_input) {
+			return new EnumerationOption(NAME, error_input);
 		}),
 
-		enumeration_list_argument_test("has duplicated value => 'a'", function () {
-			return new EnumerationOption(NAME, ['a', 'b', 'c', '  a ']);
+		enumeration_list_argument_test('  a ', "has duplicated value", function (error_input) {
+			return new EnumerationOption(NAME, [error_input, 'c', 'b', 'a']);
 		}),
 
 		// {{{1 arg[2] : default_value
-		default_value_argument_test("not a string", function () {
-			return new EnumerationOption(NAME, ENUMERATION_LIST, 3.14);
+		default_value_argument_test(3.14, "not a string", function (error_input) {
+			return new EnumerationOption(NAME, ENUMERATION_LIST, error_input);
 		}),
 
-		default_value_argument_test("an empty string", function () {
-			return new EnumerationOption(NAME, ENUMERATION_LIST, "   ");
+		default_value_argument_test("   ", "an empty string", function (error_input) {
+			return new EnumerationOption(NAME, ENUMERATION_LIST, error_input);
 		}),
 
-		default_value_argument_test("not found in enumeration list", function () {
-			return new EnumerationOption(NAME, ENUMERATION_LIST, "does not exist");
+		default_value_argument_test("error_input", "not a valid enumeration value", function (error_input) {
+			return new EnumerationOption(NAME, ENUMERATION_LIST, error_input);
 		}),
 		// }}}1
 	];

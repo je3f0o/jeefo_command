@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : invalid_argument_exception.js
 * Created at  : 2019-01-05
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -44,14 +44,14 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, TypeError, {
 			style("Parameter[", "gray"),
 			style(parameter_name, "yellow"),
 			style(']', "gray"),
-		].join('');
+		].join(''), parameter_value_string;
 
 		if (typeof parameter_value === "string") {
-			parameter_value = `'${ parameter_value }'`;
+			parameter_value_string = `'${ parameter_value }'`;
 		} else if (parameter_value === null) {
-			parameter_value = "null";
+			parameter_value_string = "null";
 		} else if (Array.isArray(parameter_value)) {
-			parameter_value = `[${ parameter_value }]`;
+			parameter_value_string = `[${ parameter_value }]`;
 		}
 
 		this.stack = [
@@ -60,7 +60,7 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, TypeError, {
 			`${ style("Instanceof ", "cyan") } : ${ instance }`,
 			`${ style("Description", "cyan") } : ${ description }`,
 			style("------------------------------------------", "grey"),
-			`${ parameter } => ${ parameter_value }`,
+			`${ parameter } => ${ parameter_value_string }`,
 			`${ style("Stack trace", "red")  } =>\n${ this.stack.replace(FIRST_LINE_REGEX, '') }`,
 		].join("\n");
 

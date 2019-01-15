@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : file_path_option_specs.js
 * Created at  : 2019-01-13
-* Updated at  : 2019-01-13
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -39,29 +39,29 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
-		name_argument_test("undefined", function () {
+		name_argument_test(undefined, "undefined", function () {
 			return new FilePathOption();
 		}),
 
-		name_argument_test("null", function () {
+		name_argument_test(null, "null", function () {
 			return new FilePathOption(null);
 		}),
 
-		name_argument_test("not a string", function () {
-			return new FilePathOption(3.14);
+		name_argument_test(3.14, "not a string", function (error_input) {
+			return new FilePathOption(error_input);
 		}),
 
-		name_argument_test("an empty string", function () {
-			return new FilePathOption("       ");
+		name_argument_test("       ", "an empty string", function (error_input) {
+			return new FilePathOption(error_input);
 		}),
 
 		// {{{1 arg[1] : default_value
-		default_value_argument_test("not a string", function () {
-			return new FilePathOption(NAME, 3.14);
+		default_value_argument_test(3.14, "not a string", function (error_input) {
+			return new FilePathOption(NAME, error_input);
 		}),
 
-		default_value_argument_test("an empty string", function () {
-			return new FilePathOption(NAME, "   ");
+		default_value_argument_test("   ", "an empty string", function (error_input) {
+			return new FilePathOption(NAME, error_input);
 		}),
 		// }}}1
 	];

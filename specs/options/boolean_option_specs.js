@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : boolean_option_specs.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -38,24 +38,24 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
-		name_argument_test("undefined", function () {
+		name_argument_test(undefined, "undefined", function () {
 			return new BooleanOption();
 		}),
 
-		name_argument_test("null", function () {
+		name_argument_test(null, "null", function () {
 			return new BooleanOption(null);
 		}),
 
-		name_argument_test("not a string", function () {
-			return new BooleanOption(3.14);
+		name_argument_test(3.14, "not a string", function (error_input) {
+			return new BooleanOption(error_input);
 		}),
 
-		name_argument_test("an empty string", function () {
-			return new BooleanOption("       ");
+		name_argument_test("       ", "an empty string", function (error_input) {
+			return new BooleanOption(error_input);
 		}),
 
 		// {{{1 arg[1] : default_value
-		default_value_argument_test("not a boolean", function () {
+		default_value_argument_test(0, "not a boolean", function () {
 			return new BooleanOption(NAME, 0);
 		}),
 		// }}}1

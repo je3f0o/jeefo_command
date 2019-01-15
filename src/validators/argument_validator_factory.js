@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : argument_validator_factory.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-05
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -20,6 +20,9 @@ module.exports = function argument_validator_factory (function_name, argument_na
 	return function argument_validator (value) {
 		validator.validate(value, function (error, result_value) {
 			if (error) {
+				if (error.hasOwnProperty("value")) {
+					value = error.value;
+				}
 				throw new InvalidArgumentException(function_name, argument_name, argument_index, value, error.message);
 			}
 

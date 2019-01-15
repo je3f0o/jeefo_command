@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : number_validator_specs.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-05
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -24,7 +24,7 @@ var test_instance                   = require("../testers/test_instance"),
 describe("class NumberValidator (config, is_muteable)", () => {
 	var config_argument_test = argument_test_factory("config", 0);
 
-	test_invalid_argument_exception(config_argument_test("null", function () {
+	test_invalid_argument_exception(config_argument_test(null, "null", function () {
 		return new NumberValidator(null);
 	}));
 

@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : index.js
 * Created at  : 2019-01-10
-* Updated at  : 2019-01-11
+* Updated at  : 2019-01-13
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -28,6 +28,9 @@ const AUTO_COMPLETION_FULL_PATH = path.join(process.env.HOME, AUTO_COMPLETION_PA
 module.exports = {
 	name        : "install",
 	description : "Install bash auto-completion for this command line tool.",
+	options     : [
+		{ name : "force", type : "bool" }
+	],
 	execute     : function (options, command_manager, application_name) {
 		if (! fse.existsSync(AUTO_COMPLETION_FULL_PATH)) {
 			fse.copySync(path.join(__dirname, "auto-completion.sh"), AUTO_COMPLETION_FULL_PATH);

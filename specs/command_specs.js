@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_specs.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-13
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -40,42 +40,42 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	var test_cases = [
 		// {{{1 arg[0] : name
-		name_argument_test("undefined", function () {
+		name_argument_test(undefined, "undefined", function () {
 			return new Command();
 		}),
 
-		name_argument_test("null", function () {
+		name_argument_test(null, "null", function () {
 			return new Command(null);
 		}),
 
-		name_argument_test("not a string", function () {
-			return new Command(3.14);
+		name_argument_test(3.14, "not a string", function (error_input) {
+			return new Command(error_input);
 		}),
 
-		name_argument_test("an empty string", function () {
-			return new Command("       ");
+		name_argument_test("       ", "an empty string", function (error_input) {
+			return new Command(error_input);
 		}),
 
 		// {{{1 arg[1] : description
-		description_argument_test("not a string", function () {
-			return new Command(NAME, 3.14);
+		description_argument_test(3.14, "not a string", function (error_input) {
+			return new Command(NAME, error_input);
 		}),
 
-		description_argument_test("an empty string", function () {
-			return new Command(NAME, "       ");
+		description_argument_test("       ", "an empty string", function (error_input) {
+			return new Command(NAME, error_input);
 		}),
 
 		// {{{1 arg[3] : execute_fn
-		execute_fn_argument_test("undefined", function () {
+		execute_fn_argument_test(undefined, "undefined", function () {
 			return new Command(NAME, DESCRIPTION);
 		}),
 
-		execute_fn_argument_test("null", function () {
+		execute_fn_argument_test(null, "null", function () {
 			return new Command(NAME, DESCRIPTION, null);
 		}),
 
-		execute_fn_argument_test("not a function", function () {
-			return new Command(NAME, DESCRIPTION, {});
+		execute_fn_argument_test({}, "not a function", function (error_input) {
+			return new Command(NAME, DESCRIPTION, error_input);
 		}),
 		// }}}1
 	];
@@ -131,77 +131,78 @@ describe("class Command (name, description, execute_fn)", () => {
 
 		var error_test_cases = [
 			// {{{2 optoin
-			option_definition_argument_test("undefined", function () {
+			option_definition_argument_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option();
 			}),
-			option_definition_argument_test("null", function () {
+			option_definition_argument_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option(null);
 			}),
-			option_definition_argument_test("not an object", function () {
+			option_definition_argument_test("error_input", "not an object", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option("wrong_input");
+				command.add_option(error_input);
 			}),
 
 			// {{{2 optoin.type
-			option_type_test("undefined", function () {
+			option_type_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option({});
 			}),
-			option_type_test("null", function () {
+			option_type_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option({ type : null });
 			}),
-			option_type_test("not a string", function () {
+			option_type_test(3.14, "not a string", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : 3.14 });
+				command.add_option({ type : error_input });
 			}),
-			option_type_test("an empty string", function () {
+			option_type_test('     ', "an empty string", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : '     ' });
+				command.add_option({ type : error_input });
 			}),
-			option_type_test("not a valid option type", function () {
+			option_type_test("Int32", "not a valid option type", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : "int32" });
+				command.add_option({ type : error_input });
 			}),
 
 			// {{{2 optoin.name
-			option_name_test("undefined", function () {
+			option_name_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option({ type : "string" });
 			}),
-			option_name_test("null", function () {
+			option_name_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : null });
 			}),
-			option_name_test("not a string", function () {
+			option_name_test(3.14, "not a string", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : "string", name : 3.14 });
+				command.add_option({ type : "string", name : error_input });
 			}),
-			option_name_test("an empty string", function () {
+			option_name_test("     ", "an empty string", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : "string", name : '     ' });
+				command.add_option({ type : "string", name : error_input });
 			}),
-			option_name_test("duplicated option name", function () {
+			option_name_test("option_name", "duplicated option name", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : "string", name : 'command_name' });
-				command.add_option({ type : "string", name : 'command_name' });
+				command.add_option({ type : "string", name : error_input });
+				command.add_option({ type : "string", name : error_input });
 			}),
 
 			// {{{2 optoin.aliases
-			option_aliases_test("not an array", function () {
+			option_aliases_test({}, "not an array", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.add_option({ type : "string", name : 'command_name', aliases : {} });
+				command.add_option({ type : "string", name : "option_name", aliases : error_input });
 			}),
 			{
 				thrower : function () {
 					var command = new Command(NAME, null, execute_fn);
-					command.add_option({ type : "string", name : 'command_name', aliases : ['c', 'c'] });
+					command.add_option({ type : "string", name : "option_name", aliases : ['c', 'c'] });
 				},
 				error_message  : "duplicated alias name",
 				argument_name  : "option_definition.aliases[1]",
-				argument_index : 0
+				argument_index : 0,
+				argument_value : 'c',
 			}
 			// }}}2
 		];
@@ -412,33 +413,34 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .get_option(option_name), get_option_by_alias_name(alias_name)
 	[{
-		param   : "option_name",
-		method  : "get_option",
-		getter  : "option",
-		message : "not a valid option name"
+		param    : "option_name",
+		method   : "get_option",
+		message  : "not a valid option name",
+		argument : "option",
 	},
 	{
-		param   : "alias_name",
-		method  : "get_option_by_alias_name",
-		getter  : 'c',
-		message : "not a valid alias name"
+		param    : "alias_name",
+		method   : "get_option_by_alias_name",
+		message  : "not a valid alias name",
+		argument : 'c',
 	}].forEach(test_case => {
 		describe(`.${ test_case.method }(${ test_case.param })`, () => {
 			test_invalid_argument_exception({
 				thrower : function () {
 					var command = new Command(NAME, null, execute_fn);
-					command[test_case.method](test_case.getter);
+					command[test_case.method](test_case.argument);
 				},
 				error_message  : test_case.message,
 				argument_name  : test_case.param,
-				argument_index : 0
+				argument_index : 0,
+				argument_value : test_case.argument
 			});
 
 			it("Should be pass", () => {
 				var command = new Command(NAME, null, execute_fn),
 					option  = command.add_option({ name : "option", type : "string", aliases : ['c'] });
 
-				expect(command[test_case.method](test_case.getter)).toBe(option);
+				expect(command[test_case.method](test_case.argument)).toBe(option);
 			});
 		});
 	});
@@ -467,47 +469,47 @@ describe("class Command (name, description, execute_fn)", () => {
 
 		var set_alias_error_cases = [
 			// {{{2 Argument: alias_name
-			alias_name_argument_test("undefined", function () {
+			alias_name_argument_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_alias();
 			}),
-			alias_name_argument_test("null", function () {
+			alias_name_argument_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_alias(null);
 			}),
-			alias_name_argument_test("not a string", function () {
+			alias_name_argument_test(3.14, "not a string", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.set_alias(3.14);
+				command.set_alias(error_input);
 			}),
-			alias_name_argument_test("an empty string", function () {
+			alias_name_argument_test("        ", "an empty string", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.set_alias("        ");
+				command.set_alias(error_input);
 			}),
-			alias_name_argument_test("duplicated alias name", function () {
+			alias_name_argument_test('c', "duplicated alias name", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				var option  = command.add_option({ type : "string", name : "command_name", aliases : ['c'] });
+				var option  = command.add_option({ type : "string", name : "command_name", aliases : [error_input] });
 
-				command.set_alias('c', option);
+				command.set_alias(error_input, option);
 			}),
 
 			// {{{2 Argument: option
-			option_argument_test("undefined", function () {
+			option_argument_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_alias("key");
 			}),
-			option_argument_test("null", function () {
+			option_argument_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_alias("key", null);
 			}),
-			option_argument_test("not an object", function () {
+			option_argument_test("error_input", "not an object", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.set_alias("key", "wrong_input");
+				command.set_alias("key", error_input);
 			}),
-			option_argument_test("not a valid option", function () {
+			option_argument_test(new StringOption("option"), "not a valid option", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : "option" });
 
-				command.set_alias('o', new StringOption("option"));
+				command.set_alias('o', error_input);
 			}),
 			// }}}2
 		];
@@ -537,31 +539,31 @@ describe("class Command (name, description, execute_fn)", () => {
 
 		var test_cases = [
 			// {{{2 args
-			args_test("undefined", function () {
+			args_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_options();
 			}),
-			args_test("null", function () {
+			args_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_options(null);
 			}),
-			args_test("not an array", function () {
+			args_test({}, "not an array", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.set_options({});
+				command.set_options(error_input);
 			}),
 
 			// {{{2 index
-			index_test("undefined", function () {
+			index_test(undefined, "undefined", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_options([]);
 			}),
-			index_test("null", function () {
+			index_test(null, "null", function () {
 				var command = new Command(NAME, null, execute_fn);
 				command.set_options([], null);
 			}),
-			index_test("not a number", function () {
+			index_test('0', "not a number", function (error_input) {
 				var command = new Command(NAME, null, execute_fn);
-				command.set_options([], "0");
+				command.set_options([], error_input);
 			}),
 			// }}}2
 		];

@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : array_validator_specs.js
 * Created at  : 2019-01-07
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -25,7 +25,7 @@ var IBaseValidator                  = require("../../src/validators/i_base_valid
 describe("class ArrayValidator (config, is_muteable)", () => {
 	var config_argument_test = argument_test_factory("config", 0);
 
-	test_invalid_argument_exception(config_argument_test("null", function () {
+	test_invalid_argument_exception(config_argument_test(null, "null", function () {
 		return new ArrayValidator(null);
 	}));
 

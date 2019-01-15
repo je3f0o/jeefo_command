@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_manager_specs.js
 * Created at  : 2019-01-08
-* Updated at  : 2019-01-09
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -39,20 +39,20 @@ describe("class CommandManager (application_name)", () => {
 
 	var test_cases = [
 		// {{{1 arg[0] : application_name
-		app_name_argument_test("undefined", function () {
+		app_name_argument_test(undefined, "undefined", function () {
 			return new CommandManager();
 		}),
 
-		app_name_argument_test("null", function () {
+		app_name_argument_test(null, "null", function () {
 			return new CommandManager(null);
 		}),
 
-		app_name_argument_test("not a string", function () {
-			return new CommandManager(3.14);
+		app_name_argument_test(3.14, "not a string", function (error_input) {
+			return new CommandManager(error_input);
 		}),
 
-		app_name_argument_test("an empty string", function () {
-			return new CommandManager("       ");
+		app_name_argument_test("       ", "an empty string", function (error_input) {
+			return new CommandManager(error_input);
 		}),
 		// }}}1
 	];
@@ -80,46 +80,46 @@ describe("class CommandManager (application_name)", () => {
 
 		var error_test_cases = [
 			// {{{2 command_definition
-			command_test("undefined", function () {
+			command_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register();
 			}),
-			command_test("null", function () {
+			command_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register(null);
 			}),
-			command_test("not an object", function () {
+			command_test("error_input", "not an object", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.register("wrong_input");
+				command_manager.register(error_input);
 			}),
 
 			// {{{2 command_definition.name
-			command_name_test("undefined", function () {
+			command_name_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register({});
 			}),
-			command_name_test("null", function () {
+			command_name_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register({ name : null });
 			}),
-			command_name_test("not a string", function () {
+			command_name_test(3.14, "not a string", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.register({ name : 3.14 });
+				command_manager.register({ name : error_input });
 			}),
-			command_name_test("an empty string", function () {
+			command_name_test("      ", "an empty string", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.register({ name : "      " });
+				command_manager.register({ name : error_input });
 			}),
-			command_name_test("duplicated command name", function () {
+			command_name_test(VALID_COMMAND_DEFINITION.name, "duplicated command name", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register(VALID_COMMAND_DEFINITION);
 				command_manager.register(VALID_COMMAND_DEFINITION);
 			}),
 
 			// {{{2 command_definition.aliases
-			command_aliases_test("not an array", function () {
+			command_aliases_test("error_input", "not an array", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.register({ name : "command", aliases : "wrong_input" });
+				command_manager.register({ name : "command", aliases : error_input });
 			}),
 			{
 				thrower : function () {
@@ -128,27 +128,28 @@ describe("class CommandManager (application_name)", () => {
 				},
 				error_message  : "duplicated alias name",
 				argument_name  : "command_definition.aliases[1]",
-				argument_index : 0
+				argument_index : 0,
+				argument_value : 'c'
 			},
 
 			// {{{2 command_definition.options
-			command_options_test("not an array", function () {
+			command_options_test("error_input", "not an array", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.register({ name : "command", options : "wrong_input" });
+				command_manager.register({ name : "command", options : error_input });
 			}),
 
 			// {{{2 command_definition.options
-			command_execute_test("undefined", function () {
+			command_execute_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register({ name : "command" });
 			}),
-			command_execute_test("null", function () {
+			command_execute_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.register({ name : "command", execute : null });
 			}),
-			command_execute_test("not a function", function () {
+			command_execute_test("error_input", "not a function", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.register({ name : "command", execute : "wrong_input" });
+				command_manager.register({ name : "command", execute : error_input });
 			}),
 			// }}}2
 		];
@@ -206,51 +207,51 @@ describe("class CommandManager (application_name)", () => {
 
 		var set_alias_error_cases = [
 			// {{{2 Argument: alias_name
-			alias_name_argument_test("undefined", function () {
+			alias_name_argument_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.set_alias();
 			}),
-			alias_name_argument_test("null", function () {
+			alias_name_argument_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.set_alias(null);
 			}),
-			alias_name_argument_test("not a string", function () {
+			alias_name_argument_test(3.14, "not a string", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.set_alias(3.14);
+				command_manager.set_alias(error_input);
 			}),
-			alias_name_argument_test("an empty string", function () {
+			alias_name_argument_test("        ", "an empty string", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.set_alias("        ");
+				command_manager.set_alias(error_input);
 			}),
-			alias_name_argument_test("duplicated alias name", function () {
+			alias_name_argument_test('c', "duplicated alias name", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME),
 					command         = command_manager.register({
 						name    : "command",
-						aliases : ['c'],
+						aliases : [error_input],
 						execute : execute_fn
 					});
 
-				command_manager.set_alias('c', command);
+				command_manager.set_alias(error_input, command);
 			}),
 
 			// {{{2 Argument: command
-			command_argument_test("undefined", function () {
+			command_argument_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.set_alias("key");
 			}),
-			command_argument_test("null", function () {
+			command_argument_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.set_alias("key", null);
 			}),
-			command_argument_test("not an object", function () {
+			command_argument_test("error_input", "not an object", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.set_alias("key", "wrong_input");
+				command_manager.set_alias("key", error_input);
 			}),
-			command_argument_test("not a valid command", function () {
+			command_argument_test(new Command("command", null, execute_fn), "not a valid command", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
 
 				command_manager.register({ name : "command", execute : execute_fn });
-				command_manager.set_alias('c', new Command("command", null, execute_fn));
+				command_manager.set_alias('c', error_input);
 			}),
 			// }}}2
 		];
@@ -311,7 +312,8 @@ describe("class CommandManager (application_name)", () => {
 				},
 				error_message  : test_case.message,
 				argument_name  : test_case.param,
-				argument_index : 0
+				argument_index : 0,
+				argument_value : test_case.argument,
 			});
 
 			it("Should be pass", () => {
@@ -365,42 +367,43 @@ describe("class CommandManager (application_name)", () => {
 
 		var error_test_cases = [
 			// {{{2 Validating argument: arguments_list
-			arguments_list_test("undefined", function () {
+			arguments_list_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.execute_commands();
 			}),
-			arguments_list_test("null", function () {
+			arguments_list_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.execute_commands(null);
 			}),
-			arguments_list_test("not an array", function () {
+			arguments_list_test("error_input", "not an array", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.execute_commands("wrong_input");
+				command_manager.execute_commands(error_input);
 			}),
 
 			// {{{2 Validating argument: index
-			index_test("undefined", function () {
+			index_test(undefined, "undefined", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.execute_commands([]);
 			}),
-			index_test("null", function () {
+			index_test(null, "null", function () {
 				var command_manager = new CommandManager(APP_NAME);
 				command_manager.execute_commands([], null);
 			}),
-			index_test("not a number", function () {
+			index_test("error_input", "not a number", function (error_input) {
 				var command_manager = new CommandManager(APP_NAME);
-				command_manager.execute_commands([], "string");
+				command_manager.execute_commands([], error_input);
 			}),
 			// {{{2 Validating arguments[index]: (Special cases)
 			{
 				thrower : function () {
 					var command_manager = new CommandManager(APP_NAME);
 					command_manager.register({ name : "help", execute : execute_fn });
-					command_manager.execute_commands(['help', 'error_command'], 0);
+					command_manager.execute_commands(["help", "error_command"], 0);
 				},
 				error_message  : "not a valid command name",
 				argument_name  : "arguments_list[1]",
-				argument_index : 0
+				argument_index : 0,
+				argument_value : "error_command",
 			},
 			{
 				thrower : function () {
@@ -416,11 +419,12 @@ describe("class CommandManager (application_name)", () => {
 						]
 					});
 
-					command_manager.execute_commands(['help', '--command', 'build', 'error_command'], 0);
+					command_manager.execute_commands(["help", "--command", "build", "error_command"], 0);
 				},
 				error_message  : "not a valid command name",
 				argument_name  : "arguments_list[3]",
-				argument_index : 0
+				argument_index : 0,
+				argument_value : "error_command",
 			},
 			{
 				thrower : function () {
@@ -434,16 +438,17 @@ describe("class CommandManager (application_name)", () => {
 					});
 
 					var args = [
-						'help',
-						'--command' , 'build'     ,
-						'-c'        , 'generato' ,
-						'error_command'
+						"help",
+						"--command" , "build"    ,
+						"-c"        , "generato" ,
+						"error_command"
 					];
 					command_manager.execute_commands(args, 0);
 				},
 				error_message  : "not a valid command name",
 				argument_name  : "arguments_list[5]",
-				argument_index : 0
+				argument_index : 0,
+				argument_value : "error_command",
 			},
 			// }}}2
 		];

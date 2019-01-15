@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : strings_of_array_validator.js
 * Created at  : 2019-01-02
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -14,64 +14,59 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var ObjectValidator          = require("./object_validator"),
-	config_validator         = new ObjectValidator({ define : false }),
-	InvalidArgumentException = require("../exceptions/invalid_argument_exception");
+const ObjectValidator          = require("./object_validator"),
+	  InvalidArgumentException = require("../exceptions/invalid_argument_exception"),
 
-var DEFAULT_OPTIONS = {
-	trim      : true,
-	empty     : false,
-	define    : true,
-	strict    : true,
-	unique    : false,
-	nullable  : false,
-};
+	is_array         = Array.isArray,
+	config_validator = new ObjectValidator({ define : false }),
+	DEFAULT_OPTIONS  = {
+		trim     : true,
+		empty    : false,
+		define   : true,
+		strict   : true,
+		unique   : false,
+		nullable : false,
+	};
 
-function StringsOfArrayValidator (config) {
-	var self = this;
+module.exports = class StringsOfArrayValidator {
+	constructor (config) {
+		config_validator.validate(config, (err, value) => {
+			if (err) {
+				throw new InvalidArgumentException("StringsOfArrayValidator", "config", 0, config, err.message);
+			}
 
-	config_validator.validate(config, function (err, value) {
-		if (err) {
-			throw new InvalidArgumentException("StringsOfArrayValidator", "config", 0, config, err.message);
-		}
+			config = value || {};
 
-		config = value || {};
+			this.trim     = config.trim     === undefined ? DEFAULT_OPTIONS.trim     : config.trim     === true;
+			this.empty    = config.empty    === undefined ? DEFAULT_OPTIONS.empty    : config.empty    === true;
+			this.strict   = config.strict   === undefined ? DEFAULT_OPTIONS.strict   : config.strict   === true;
+			this.define   = config.define   === undefined ? DEFAULT_OPTIONS.define   : config.define   === true;
+			this.unique   = config.unique   === undefined ? DEFAULT_OPTIONS.unique   : config.unique   === true;
+			this.nullable = config.nullable === undefined ? DEFAULT_OPTIONS.nullable : config.nullable === true;
+		});
+	}
 
-		self.trim     = config.trim     === void 0 ? DEFAULT_OPTIONS.trim     : config.trim     === true;
-		self.empty    = config.empty    === void 0 ? DEFAULT_OPTIONS.empty    : config.empty    === true;
-		self.strict   = config.strict   === void 0 ? DEFAULT_OPTIONS.strict   : config.strict   === true;
-		self.define   = config.define   === void 0 ? DEFAULT_OPTIONS.define   : config.define   === true;
-		self.unique   = config.unique   === void 0 ? DEFAULT_OPTIONS.unique   : config.unique   === true;
-		self.nullable = config.nullable === void 0 ? DEFAULT_OPTIONS.nullable : config.nullable === true;
-	});
-}
+	validate (values, callback) {
+		let i, result_array, current_value;
 
-StringsOfArrayValidator.prototype = {
-	validate : function (values, callback) {
-		if (values === void 0) {
+		if (values === undefined) {
 			if (this.define) {
 				return callback({ message : "undefined" });
 			}
 			return callback(null);
-		}
-
-		if (values === null) {
+		} else if (values === null) {
 			if (this.nullable) {
 				return callback(null, null);
 			}
 			return callback({ message : "null" });
-		}
-
-		if (this.strict && ! Array.isArray(values)) {
+		} else if (this.strict && ! is_array(values)) {
 			return callback({ message : "not an array" });
-		}
-
-		if (! this.empty && values.length === 0) {
+		} else if (! this.empty && values.length === 0) {
 			return callback({ message : "an empty array" });
 		}
 
-		var i      = values.length,
-			result = new Array(i), current_value;
+		i            = values.length;
+		result_array = new Array(values.length);
 
 		while (i--) {
 			current_value = values[i];
@@ -87,15 +82,21 @@ StringsOfArrayValidator.prototype = {
 				}
 			}
 
-			if (this.unique && result.indexOf(current_value) !== -1) {
-				return callback({ message : `has duplicated value => '${ current_value }'` });
+			/**
+			 * I'm gonna leave this way for looking result array each iteration.
+			 * I feel bad for not using hash table here. But I don't want to 
+			 * double assign operator for result array and hash_table.
+			 * Which is called only few times anyway.
+			 * TODO: add option for not create result_array everytime validate.
+			 */
+			if (this.unique && result_array.indexOf(current_value) !== -1) {
+				return callback({ message : "has duplicated value", value : values[i] });
 			}
 
-			result[i] = current_value;
+			// TODO: add option for not create result_array everytime validate.
+			result_array[i] = current_value;
 		}
 
-		callback(null, result);
+		callback(null, result_array);
 	}
 };
-
-module.exports = StringsOfArrayValidator;

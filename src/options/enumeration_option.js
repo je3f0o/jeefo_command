@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : enumeration_option.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -39,7 +39,8 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 		var value = default_value_argument_validator(default_value);
 		if (value) {
 			if (this.list.indexOf(value) === -1) {
-				throw new InvalidArgumentException(CONSTRUCTOR_NAME, "default_value", 2, value, "not found in enumeration list");
+				throw new InvalidArgumentException(CONSTRUCTOR_NAME,
+					"default_value", 2, value, "not a valid enumeration value");
 			}
 			this.value = value;
 		}
@@ -48,7 +49,13 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 	type : TYPE,
 
 	initialize : function (args, index) {
-		this.value = args[index];
+		var value = args[index];
+		if (this.list.indexOf(value) === -1) {
+			throw new InvalidArgumentException(CONSTRUCTOR_NAME,
+				`args[${ index }]`, 0, value, "not a valid enumeration value");
+		}
+
+		this.value = value;
 		return index;
 	},
 

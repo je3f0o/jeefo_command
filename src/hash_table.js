@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : hash_table.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description : Secure private hash table using closure technique.
@@ -53,7 +53,7 @@ module.exports = function HashTable () {
 
 			if (_hash_map[key] !== void 0) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add`,
-					"key", 0, key, `duplicated key => '${ key }'`);
+					"key", 0, key, "duplicated key");
 			}
 
 			_hash_map[key] = value;

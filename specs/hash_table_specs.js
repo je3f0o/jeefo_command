@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : hash_table_specs.js
 * Created at  : 2019-01-05
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -16,8 +16,9 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 var expect                          = require("expect"),
 	HashTable                       = require("../src/hash_table"),
-	test_throw_exception            = require("./testers/test_throw_exception"),
 	argument_test_factory           = require("./argument_test_factory"),
+
+	test_throw_exception            = require("./testers/test_throw_exception"),
 	test_invalid_argument_exception = require("./testers/test_invalid_argument_exception");
 
 describe("class HashTable ()", () => {
@@ -31,7 +32,7 @@ describe("class HashTable ()", () => {
 		var fake_instance = Object.create(HashTable.prototype);
 		var new_instance  = HashTable.call(fake_instance);
 
-		expect(fake_instance !== new_instance).toBe(true);
+		expect(fake_instance).not.toBe(new_instance);
 	});
 
 	// {{{1 .get_length()
@@ -52,11 +53,11 @@ describe("class HashTable ()", () => {
 
 	// {{{1 .add(key, value)
 	describe(".add(key, value)", () => {
-		test_invalid_argument_exception(key_argument_tester("duplicated key => 'key'", function () {
+		test_invalid_argument_exception(key_argument_tester("key", "duplicated key", function (error_input) {
 			var hash_table = new HashTable();
 
-			hash_table.add("key", "value");
-			hash_table.add("key", null);
+			hash_table.add(error_input, "value");
+			hash_table.add(error_input, null);
 		}));
 	});
 

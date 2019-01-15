@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : hello_world.js
 * Created at  : 2017-08-31
-* Updated at  : 2019-01-13
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -19,7 +19,7 @@ var pkg            = require("../package"),
 	style          = require("../src/misc/style"),
 	CommandManager = require("../src/command_manager");
 
-var cli = new CommandManager(pkg.name);
+var command_manager = new CommandManager(pkg.name);
 
 function generate_execute_function (command_name) {
 	return function execute () {
@@ -28,7 +28,7 @@ function generate_execute_function (command_name) {
 	};
 }
 
-cli.register({
+command_manager.register({
 	name        : "build",
 	aliases     : ['b'],
     description : "Compiles the source codes.",
@@ -41,7 +41,7 @@ cli.register({
     execute : generate_execute_function("build")
 });
 
-cli.register({
+command_manager.register({
 	name        : "generate",
 	aliases     : ['g'],
     description : "Generate template files",
@@ -54,18 +54,19 @@ cli.register({
     execute : generate_execute_function("generate")
 });
 
-cli.register(require("./commands/version_command"));
-cli.register(require("./commands/print_command"));
-cli.register(require("./commands/help_command"));
+command_manager.register(require("./commands/version_command"));
+command_manager.register(require("./commands/print_command"));
+command_manager.register(require("./commands/help_command"));
 
 try {
-	cli.execute_commands(process.argv, 2);
+	command_manager.execute_commands(process.argv, 2);
 } catch (e) {
 	if (e.error_message === "not a valid command name") {
 		exit([
 			style("The specified ", "red"),
 			style(e.parameter_value, "cyan"),
-			style(` command is invalid. For available options, see \`${ cli.application_name } help\`.`, "red"),
+			style(` command is invalid. For available options, see \`${ command_manager.application_name } help\`.`, "red"),
 		].join(''));
 	}
+	throw e;
 }

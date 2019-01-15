@@ -87,7 +87,7 @@ function _jeefo_command_auto_completion () {
 			fi
 		fi
 	else
-		available_options=`jeefo-dev print --available-commands true`
+		available_options=`"$executable_command_name" print --available-commands true`
 		COMPREPLY=(`compgen -W "$available_options" -- "$current_argument"`)
 	fi
 

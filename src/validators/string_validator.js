@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : string_validator.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -51,20 +51,14 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseValidator, {
 				return callback({ message : "undefined" });
 			}
 			return callback(null);
-		}
-
-		if (value === null) {
+		} else if (value === null) {
 			if (this.nullable) {
 				return callback(null, null);
 			}
 			return callback({ message : "null" });
-		}
-
-		if (typeof value !== "string") {
+		} else if (typeof value !== "string") {
 			return callback({ message : "not a string" });
-		}
-
-		if (this.trim) {
+		} else if (this.trim) {
 			value = value.trim();
 			if (value === '') {
 				return callback({ message : "an empty string" });

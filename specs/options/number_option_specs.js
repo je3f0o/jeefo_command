@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : number_option_specs.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -39,24 +39,24 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
-		name_argument_test("undefined", function () {
+		name_argument_test(undefined, "undefined", function () {
 			return new NumberOption();
 		}),
 
-		name_argument_test("null", function () {
+		name_argument_test(null, "null", function () {
 			return new NumberOption(null);
 		}),
 
-		name_argument_test("not a string", function () {
-			return new NumberOption(3.14);
+		name_argument_test(3.14, "not a string", function (error_input) {
+			return new NumberOption(error_input);
 		}),
 
-		name_argument_test("an empty string", function () {
-			return new NumberOption("       ");
+		name_argument_test("       ", "an empty string", function (error_input) {
+			return new NumberOption(error_input);
 		}),
 
 		// {{{1 arg[1] : default_value
-		default_value_argument_test("not a number", function () {
+		default_value_argument_test(false, "not a number", function () {
 			return new NumberOption(NAME, false);
 		}),
 		// }}}1

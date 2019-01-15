@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-13
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -95,7 +95,7 @@ function Command (name, description, execute_fn) {
 					break;
 				default:
 					throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
-						"option_definition.type", 0, type, "not a valid option type");
+						"option_definition.type", 0, option_definition.type, "not a valid option type");
 			}
 		});
 
@@ -187,11 +187,13 @@ function Command (name, description, execute_fn) {
 					"alias_name", 0, alias_name, err.message);
 			}
 
-			alias_name = `-${ result_value }`;
-			if (_aliases_hash_table.has(alias_name)) {
+			result_value = `-${ result_value }`;
+			if (_aliases_hash_table.has(result_value)) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
-					"alias_name", 0, option, "duplicated alias name");
+					"alias_name", 0, alias_name, "duplicated alias name");
 			}
+
+			alias_name = result_value;
 		});
 
 		// {{{2 option

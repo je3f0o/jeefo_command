@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_manager.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-09
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -156,11 +156,12 @@ function CommandManager (application_name) {
 					"alias_name", 0, alias_name, err.message);
 			}
 
-			alias_name = result_value;
-			if (_aliases_hash_table.has(alias_name)) {
+			if (_aliases_hash_table.has(result_value)) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
-					"alias_name", 0, command, "duplicated alias name");
+					"alias_name", 0, alias_name, "duplicated alias name");
 			}
+
+			alias_name = result_value;
 		});
 
 		// {{{2 Validating: command
