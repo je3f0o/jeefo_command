@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : help_command.js
 * Created at  : 2019-01-13
-* Updated at  : 2019-01-13
+* Updated at  : 2019-01-15
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -20,7 +20,7 @@ const exit  = require("../../helpers/exit"),
 module.exports = {
 	name        : "help",
 	aliases     : ['h', '-h', '--help', '?'],
-    description : "Shows this help messages",
+    description : "Print commands and options description and exit",
     options     : [
         { name: 'option' , type: "String", aliases: ['o'] } ,
         { name: 'command', type: "String", aliases: ['c'] } ,

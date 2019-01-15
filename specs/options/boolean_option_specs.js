@@ -35,6 +35,8 @@ const TYPE    = "Boolean",
 describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 	var name_argument_test          = argument_test_factory(PARAMS[0], 0);
 	var default_value_argument_test = argument_test_factory(PARAMS[1], 1);
+	var args_argument_test          = argument_test_factory("args", 0);
+	var index_argument_test         = argument_test_factory("index", 1);
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
@@ -70,25 +72,6 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 		{ name : "IBaseOption", constructor_fn : IBaseOption },
 	]);
 
-	var expected_test_cases = [
-		// {{{1 index: 0
-		{
-			index          : 0,
-			value          : ARGUMENTS[1],
-			expected_value : true,
-			expected_index : 1,
-		},
-
-		// {{{1 index: 3
-		{
-			index          : 2,
-			value          : ARGUMENTS[3],
-			expected_value : false,
-			expected_index : 3,
-		}
-		// }}}1
-	];
-
 	test_default_value([
 		// {{{1 .value: undefined
 		{
@@ -118,5 +101,72 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 	]);
 
 	test_type_and_name(option, TYPE, NAME);
-	test_initialize(option, ARGUMENTS, expected_test_cases);
+	test_initialize(option, {
+		// {{{1 Invalid cases
+		invalid_cases : [
+			// {{{2 args
+			args_argument_test(undefined, "undefined", function () {
+				var option = new BooleanOption(NAME);
+				option.initialize();
+			}),
+			args_argument_test(null, "null", function () {
+				var option = new BooleanOption(NAME);
+				option.initialize(null);
+			}),
+			args_argument_test("error_input", "not an array", function (error_input) {
+				var option = new BooleanOption(NAME);
+				option.initialize(error_input);
+			}),
+
+			// {{{2 invalid value
+			{
+				thrower : function () {
+					var option = new BooleanOption(NAME);
+					option.initialize(["fasle"], 0);
+				},
+				error_message  : "not a boolean",
+				argument_name  : "args[0]",
+				argument_index : 0,
+				argument_value : "fasle",
+			},
+
+			// {{{2 index
+			index_argument_test(undefined, "undefined", function () {
+				var option = new BooleanOption(NAME);
+				option.initialize([]);
+			}),
+			index_argument_test(null, "null", function () {
+				var option = new BooleanOption(NAME);
+				option.initialize([], null);
+			}),
+			index_argument_test('0', "not a number", function (error_input) {
+				var option = new BooleanOption(NAME);
+				option.initialize([], error_input);
+			}),
+			// }}}2
+		],
+
+		// {{{1 Valid cases
+		valid_cases : [
+			// {{{2 index: 0
+			{
+				args           : ARGUMENTS,
+				index          : 0,
+				value          : ARGUMENTS[1],
+				expected_value : true,
+				expected_index : 1,
+			},
+
+			// {{{2 index: 2
+			{
+				args           : ARGUMENTS,
+				index          : 2,
+				value          : ARGUMENTS[3],
+				expected_value : false,
+				expected_index : 3,
+			}
+			// }}}2
+		]
+		// }}}1
+	});
 });

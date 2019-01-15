@@ -17,13 +17,20 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 var style                      = require("../misc/style"),
 	jeefo_class                = require("../misc/jeefo_class"),
 	IBaseOption                = require("./i_base_option"),
+
+	ArrayValidator             = require("../validators/array_validator"),
+	NumberValidator            = require("../validators/number_validator"),
 	StringValidator            = require("../validators/string_validator"),
 	StringsOfArrayValidator    = require("../validators/strings_of_array_validator"),
+
 	InvalidArgumentException   = require("../exceptions/invalid_argument_exception"),
 	argument_validator_factory = require("../validators/argument_validator_factory");
 
 var TYPE             = "Enumeration",
 	CONSTRUCTOR_NAME = `${ TYPE }Option`;
+
+var array_validator  = new ArrayValidator(),
+	number_validator = new NumberValidator();
 
 var default_value_validator    = new StringValidator({ trim : true, nullable : true, define : false });
 var enumeration_list_validator = new StringsOfArrayValidator({ unique : true });
@@ -49,6 +56,19 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 	type : TYPE,
 
 	initialize : function (args, index) {
+		array_validator.validate(args, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.initialize`,
+					"args", 0, args, err.message);
+			}
+		});
+		number_validator.validate(index, err => {
+			if (err) {
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.initialize`,
+					"index", 1, index, err.message);
+			}
+		});
+
 		var value = args[index];
 		if (this.list.indexOf(value) === -1) {
 			throw new InvalidArgumentException(CONSTRUCTOR_NAME,
