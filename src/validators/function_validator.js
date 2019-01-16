@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : function_validator.js
 * Created at  : 2019-01-02
-* Updated at  : 2019-01-10
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -17,10 +17,10 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 var jeefo_class              = require("../misc/jeefo_class"),
 	IBaseValidator           = require("./i_base_validator"),
 	ObjectValidator          = require("./object_validator"),
-	config_validator         = new ObjectValidator({ define : false }),
 	InvalidArgumentException = require("../exceptions/invalid_argument_exception");
 
-var DEFAULT_OPTIONS = {
+var config_validator = new ObjectValidator({ define : false, nullable : true }),
+	DEFAULT_OPTIONS  = {
 		define   : true,
 		nullable : false,
 	},

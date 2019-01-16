@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_manager_specs.js
 * Created at  : 2019-01-08
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -28,14 +28,14 @@ const APP_NAME                 = "jeefo",
 		  aliases     : [],
 		  description : "Shows help messages for this CLI",
 		  options     : [],
-		  execute : function (options, args) {
+		  execute     : function (options, args) {
 		      console.log(options, args);
 		  }
 	  },
 	  execute_fn = function () {};
 
 describe("class CommandManager (application_name)", () => {
-	var app_name_argument_test = argument_test_factory("application_name", 0);
+	var app_name_argument_test = argument_test_factory("CommandManager", "application_name", 0);
 
 	var test_cases = [
 		// {{{1 arg[0] : application_name
@@ -72,11 +72,11 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .register(command_definition)
 	describe(".register(command_definition)", () => {
-		var command_test         = argument_test_factory("command_definition", 0);
-		var command_name_test    = argument_test_factory("command_definition.name"    , 0);
-		var command_aliases_test = argument_test_factory("command_definition.aliases" , 0);
-		var command_options_test = argument_test_factory("command_definition.options" , 0);
-		var command_execute_test = argument_test_factory("command_definition.execute" , 0);
+		var command_test         = argument_test_factory("CommandManager.register", "command_definition", 0);
+		var command_name_test    = argument_test_factory("CommandManager.register", "command_definition.name"    , 0);
+		var command_aliases_test = argument_test_factory("CommandManager.register", "command_definition.aliases" , 0);
+		var command_options_test = argument_test_factory("CommandManager.register", "command_definition.options" , 0);
+		var command_execute_test = argument_test_factory("CommandManager.register", "command_definition.execute" , 0);
 
 		var error_test_cases = [
 			// {{{2 command_definition
@@ -127,6 +127,7 @@ describe("class CommandManager (application_name)", () => {
 					command_manager.register({ name : "command", aliases : ['c', 'c'], execute : execute_fn });
 				},
 				error_message  : "duplicated alias name",
+				function_name  : "CommandManager.register",
 				argument_name  : "command_definition.aliases[1]",
 				argument_index : 0,
 				argument_value : 'c'
@@ -202,8 +203,8 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .set_alias(alias_name, command)
 	describe(".set_alias(alias_name, command)", () => {
-		var alias_name_argument_test = argument_test_factory("alias_name", 0);
-		var command_argument_test    = argument_test_factory("command", 1);
+		var alias_name_argument_test = argument_test_factory("CommandManager.set_alias", "alias_name", 0);
+		var command_argument_test    = argument_test_factory("CommandManager.set_alias", "command", 1);
 
 		var set_alias_error_cases = [
 			// {{{2 Argument: alias_name
@@ -296,12 +297,14 @@ describe("class CommandManager (application_name)", () => {
 		param    : "command_name",
 		method   : "get_command",
 		message  : "not a valid command name",
+		fn_name  : "CommandManager.get_command",
 		argument : "command",
 	},
 	{
 		param    : "alias_name",
 		method   : "get_command_by_alias_name",
 		message  : "not a valid alias name",
+		fn_name  : "CommandManager.get_command_by_alias_name",
 		argument : 'c',
 	}].forEach(test_case => {
 		describe(`.${ test_case.method }(${ test_case.param })`, () => {
@@ -311,6 +314,7 @@ describe("class CommandManager (application_name)", () => {
 					command_manager[test_case.method](test_case.argument);
 				},
 				error_message  : test_case.message,
+				function_name  : test_case.fn_name,
 				argument_name  : test_case.param,
 				argument_index : 0,
 				argument_value : test_case.argument,
@@ -362,8 +366,8 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .execute_commands(arguments_list, index)
 	describe(".execute_commands(arguments_list, index)", () => {
-		var arguments_list_test = argument_test_factory("arguments_list", 0),
-			index_test          = argument_test_factory("index"         , 1);
+		var arguments_list_test = argument_test_factory("CommandManager.execute_commands", "arguments_list", 0),
+			index_test          = argument_test_factory("CommandManager.execute_commands", "index"         , 1);
 
 		var error_test_cases = [
 			// {{{2 Validating argument: arguments_list
@@ -401,6 +405,7 @@ describe("class CommandManager (application_name)", () => {
 					command_manager.execute_commands(["help", "error_command"], 0);
 				},
 				error_message  : "not a valid command name",
+				function_name  : "CommandManager.execute_commands",
 				argument_name  : "arguments_list[1]",
 				argument_index : 0,
 				argument_value : "error_command",
@@ -422,6 +427,7 @@ describe("class CommandManager (application_name)", () => {
 					command_manager.execute_commands(["help", "--command", "build", "error_command"], 0);
 				},
 				error_message  : "not a valid command name",
+				function_name  : "CommandManager.execute_commands",
 				argument_name  : "arguments_list[3]",
 				argument_index : 0,
 				argument_value : "error_command",
@@ -446,6 +452,7 @@ describe("class CommandManager (application_name)", () => {
 					command_manager.execute_commands(args, 0);
 				},
 				error_message  : "not a valid command name",
+				function_name  : "CommandManager.execute_commands",
 				argument_name  : "arguments_list[5]",
 				argument_index : 0,
 				argument_value : "error_command",

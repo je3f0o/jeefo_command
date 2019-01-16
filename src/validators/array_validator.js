@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : array_validator.js
 * Created at  : 2019-01-07
-* Updated at  : 2019-01-07
+* Updated at  : 2019-01-16
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -17,10 +17,10 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 var jeefo_class              = require("../misc/jeefo_class"),
 	IBaseValidator           = require("./i_base_validator"),
 	ObjectValidator          = require("./object_validator"),
-	config_validator         = new ObjectValidator({ define : false }),
 	InvalidArgumentException = require("../exceptions/invalid_argument_exception");
 
 var is_array         = Array.isArray,
+	config_validator = new ObjectValidator({ define : false, nullable : true }),
 	CONSTRUCTOR_NAME = "ArrayValidator",
 	DEFAULT_OPTIONS  = {
 		define   : true,

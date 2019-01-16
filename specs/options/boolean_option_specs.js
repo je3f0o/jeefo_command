@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : boolean_option_specs.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-16
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -33,10 +33,11 @@ const TYPE    = "Boolean",
 	  ARGUMENTS = [`--${ NAME }`, "true", `-${ ALIASES[0] }`, "false"];
 
 describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
-	var name_argument_test          = argument_test_factory(PARAMS[0], 0);
-	var default_value_argument_test = argument_test_factory(PARAMS[1], 1);
-	var argument_list_argument_test = argument_test_factory("arguments_list", 0);
-	var index_argument_test         = argument_test_factory("index", 1);
+	var name_argument_test          = argument_test_factory(`${ TYPE }Option`, PARAMS[0], 0);
+	var default_value_argument_test = argument_test_factory(`${ TYPE }Option`, PARAMS[1], 1);
+	var argument_list_argument_test = argument_test_factory(`${ TYPE }Option.initialize`, "arguments_list", 0);
+	var argument_list_0_test = argument_test_factory(`${ TYPE }Option.initialize`, "arguments_list[0]", 0);
+	var index_argument_test         = argument_test_factory(`${ TYPE }Option.initialize`, "index", 1);
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
@@ -119,16 +120,10 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 			}),
 
 			// {{{2 invalid value
-			{
-				thrower : function () {
-					var option = new BooleanOption(NAME);
-					option.initialize(["fasle"], 0);
-				},
-				error_message  : "not a boolean",
-				argument_name  : "arguments_list[0]",
-				argument_index : 0,
-				argument_value : "fasle",
-			},
+			argument_list_0_test("fasle", "not a boolean", function (error_input) {
+				var option = new BooleanOption(NAME);
+				option.initialize([error_input], 0);
+			}),
 
 			// {{{2 index
 			index_argument_test(undefined, "undefined", function () {

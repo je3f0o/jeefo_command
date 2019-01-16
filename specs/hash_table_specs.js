@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : hash_table_specs.js
 * Created at  : 2019-01-05
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -22,8 +22,6 @@ var expect                          = require("expect"),
 	test_invalid_argument_exception = require("./testers/test_invalid_argument_exception");
 
 describe("class HashTable ()", () => {
-	var key_argument_tester = argument_test_factory("key", 0);
-
 	test_throw_exception("Please use: new HashTable()", function () {
 		return HashTable.call(null);
 	});
@@ -53,6 +51,8 @@ describe("class HashTable ()", () => {
 
 	// {{{1 .add(key, value)
 	describe(".add(key, value)", () => {
+		var key_argument_tester = argument_test_factory("HashTable.add", "key", 0);
+
 		test_invalid_argument_exception(key_argument_tester("key", "duplicated key", function (error_input) {
 			var hash_table = new HashTable();
 

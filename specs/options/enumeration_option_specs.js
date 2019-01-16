@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : enumeration_option_specs.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-16
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -37,11 +37,12 @@ const NAME             = "type",
 ENUMERATION_LIST.unshift(DEFAULT_VALUE);
 
 describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
-	var name_argument_test             = argument_test_factory(PARAMS[0], 0);
-	var enumeration_list_argument_test = argument_test_factory(PARAMS[1], 1);
-	var default_value_argument_test    = argument_test_factory(PARAMS[2], 2);
-	var args_argument_test             = argument_test_factory("arguments_list", 0);
-	var index_argument_test            = argument_test_factory("index", 1);
+	var name_argument_test             = argument_test_factory(`${ TYPE }Option`, PARAMS[0], 0);
+	var enumeration_list_argument_test = argument_test_factory(`${ TYPE }Option`, PARAMS[1], 1);
+	var default_value_argument_test    = argument_test_factory(`${ TYPE }Option`, PARAMS[2], 2);
+	var argument_list_argument_test    = argument_test_factory(`${ TYPE }Option.initialize`, "arguments_list", 0);
+	var argument_list_0_test           = argument_test_factory(`${ TYPE }Option.initialize`, "arguments_list[0]", 0);
+	var index_argument_test            = argument_test_factory(`${ TYPE }Option.initialize`, "index", 1);
 
 	var constructor_arguments_test_cases = [
 		// {{{1 arg[0] : name
@@ -138,30 +139,24 @@ describe(`class ${ TYPE }Option (${ PARAMS.join(", ") })`, () => {
 		// {{{1 Invalid cases
 		invalid_cases : [
 			// {{{2 args
-			args_argument_test(undefined, "undefined", function () {
+			argument_list_argument_test(undefined, "undefined", function () {
 				var option = new EnumerationOption(NAME, ENUMERATION_LIST);
 				option.initialize();
 			}),
-			args_argument_test(null, "null", function () {
+			argument_list_argument_test(null, "null", function () {
 				var option = new EnumerationOption(NAME, ENUMERATION_LIST);
 				option.initialize(null);
 			}),
-			args_argument_test("error_input", "not an array", function (error_input) {
+			argument_list_argument_test("error_input", "not an array", function (error_input) {
 				var option = new EnumerationOption(NAME, ENUMERATION_LIST);
 				option.initialize(error_input);
 			}),
 
 			// {{{2 invalid value
-			{
-				thrower : function () {
-					var option = new EnumerationOption(NAME, ENUMERATION_LIST);
-					option.initialize(["error_input"], 0);
-				},
-				error_message  : "not a valid enumeration value",
-				argument_name  : "arguments_list[0]",
-				argument_index : 0,
-				argument_value : "error_input",
-			},
+			argument_list_0_test("error_input", "not a valid enumeration value", function (error_input) {
+				var option = new EnumerationOption(NAME, ENUMERATION_LIST);
+				option.initialize([error_input], 0);
+			}),
 
 			// {{{2 index
 			index_argument_test(undefined, "undefined", function () {

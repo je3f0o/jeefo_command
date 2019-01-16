@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : string_validator.js
 * Created at  : 2019-01-01
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -19,7 +19,7 @@ var jeefo_class              = require("../misc/jeefo_class"),
 	ObjectValidator          = require("./object_validator"),
 	InvalidArgumentException = require("../exceptions/invalid_argument_exception");
 
-var config_validator = new ObjectValidator({ define : false }),
+var config_validator = new ObjectValidator({ define : false, nullable : true }),
 	DEFAULT_OPTIONS  = {
 		trim     : false,
 		define   : true,

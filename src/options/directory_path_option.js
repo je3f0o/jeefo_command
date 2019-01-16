@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : directory_path_option.js
 * Created at  : 2019-01-13
-* Updated at  : 2019-01-13
+* Updated at  : 2019-01-16
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -14,11 +14,12 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var jeefo_class                = require("../misc/jeefo_class"),
-	IBaseOption                = require("./i_base_option"),
-	StringOption               = require("./string_option"),
-	StringValidator            = require("../validators/string_validator"),
-	argument_validator_factory = require("../validators/argument_validator_factory");
+var jeefo_class                       = require("../misc/jeefo_class"),
+	IBaseOption                       = require("./i_base_option"),
+	StringOption                      = require("./string_option"),
+	StringValidator                   = require("../validators/string_validator"),
+	argument_validator_factory        = require("../validators/argument_validator_factory"),
+	generate_string_initialize_method = require("./generate_string_initialize_method");
 
 var TYPE             = "DirectoryPath",
 	CONSTRUCTOR_NAME = `${ TYPE }Option`;
@@ -34,5 +35,5 @@ module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseOption, {
 
 	type       : TYPE,
 	to_string  : StringOption.prototype.to_string,
-	initialize : StringOption.prototype.initialize,
+	initialize : generate_string_initialize_method(CONSTRUCTOR_NAME),
 });

@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : boolean_validator.js
 * Created at  : 2019-01-02
-* Updated at  : 2019-01-05
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -17,23 +17,23 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 var jeefo_class              = require("../misc/jeefo_class"),
 	IBaseValidator           = require("./i_base_validator"),
 	ObjectValidator          = require("./object_validator"),
-	config_validator         = new ObjectValidator({ define : false }),
 	InvalidArgumentException = require("../exceptions/invalid_argument_exception");
 
-var CLASS_NAME      = "BooleanValidator",
-	DEFAULT_OPTIONS = {
+var config_validator = new ObjectValidator({ define : false, nullable : true }),
+	CONSTRUCTOR_NAME = "BooleanValidator",
+	DEFAULT_OPTIONS  = {
 		define   : true,
 		nullable : false,
 	};
 
-module.exports = jeefo_class.create(CLASS_NAME, IBaseValidator, {
+module.exports = jeefo_class.create(CONSTRUCTOR_NAME, IBaseValidator, {
 	constructor : function (config, is_muteable) {
 		var self = this;
 		is_muteable = "unused";
 
 		config_validator.validate(config, function (err, value) {
 			if (err) {
-				throw new InvalidArgumentException(CLASS_NAME, "config", 0, config, err.message);
+				throw new InvalidArgumentException(CONSTRUCTOR_NAME, "config", 0, config, err.message);
 			}
 
 			config = value || {};

@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_manager.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -63,7 +63,7 @@ function CommandManager (application_name) {
 		// {{{2 Validating: command_definition
 		object_validator.validate(command_definition, err => {
 			if (err) {
-				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.register`,
 					"command_definition", 0, command_definition, err.message);
 			}
 		});
@@ -71,13 +71,13 @@ function CommandManager (application_name) {
 		// {{{2 Validating: command_definition.name
 		required_string_validator.validate(command_definition.name, (err, result_value) => {
 			if (err) {
-				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.register`,
 					"command_definition.name", 0, command_definition.name, err.message);
 			}
 			name = result_value;
 
 			if (_commands_hash_table.has(name)) {
-				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.register`,
 					"command_definition.name", 0, name, "duplicated command name");
 			}
 		});
@@ -93,7 +93,7 @@ function CommandManager (application_name) {
 		// {{{2 Validating: command_definition.options
 		options_validator.validate(command_definition.options, err => {
 			if (err) {
-				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.add_option`,
+				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.register`,
 					"command_definition.options", 0, command_definition.options, err.message);
 			}
 		});

@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : object_validator_specs.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -14,18 +14,19 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var test_instance                   = require("../testers/test_instance"),
-	IBaseValidator                  = require("../../src/validators/i_base_validator"),
+var IBaseValidator                  = require("../../src/validators/i_base_validator"),
 	ObjectValidator                 = require("../../src/validators/object_validator"),
-	test_validation                 = require("../testers/test_validation"),
 	argument_test_factory           = require("../argument_test_factory"),
+
+	test_instance                   = require("../testers/test_instance"),
+	test_validation                 = require("../testers/test_validation"),
 	test_invalid_argument_exception = require("../testers/test_invalid_argument_exception");
 
 describe("class ObjectValidator (config, is_muteable)", () => {
-	var config_argument_test = argument_test_factory("config", 0);
+	var config_argument_test = argument_test_factory("ObjectValidator", "config", 0);
 
-	test_invalid_argument_exception(config_argument_test(null, "null", function () {
-		return new ObjectValidator(null);
+	test_invalid_argument_exception(config_argument_test("error_input", "not an object", function (error_input) {
+		return new ObjectValidator(error_input);
 	}));
 
 	var instance = new ObjectValidator();

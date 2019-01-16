@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : boolean_validator_specs.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -14,18 +14,19 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var test_instance                   = require("../testers/test_instance"),
-	IBaseValidator                  = require("../../src/validators/i_base_validator"),
-	test_validation                 = require("../testers/test_validation"),
+var IBaseValidator                  = require("../../src/validators/i_base_validator"),
 	BooleanValidator                = require("../../src/validators/boolean_validator"),
 	argument_test_factory           = require("../argument_test_factory"),
+
+	test_instance                   = require("../testers/test_instance"),
+	test_validation                 = require("../testers/test_validation"),
 	test_invalid_argument_exception = require("../testers/test_invalid_argument_exception");
 
 describe("class BooleanValidator (config, is_muteable)", () => {
-	var config_argument_test = argument_test_factory("config", 0);
+	var config_argument_test = argument_test_factory("BooleanValidator", "config", 0);
 
-	test_invalid_argument_exception(config_argument_test(null, "null", function () {
-		return new BooleanValidator(null);
+	test_invalid_argument_exception(config_argument_test("error_input", "not an object", function (error_input) {
+		return new BooleanValidator(error_input);
 	}));
 
 	var instance = new BooleanValidator();

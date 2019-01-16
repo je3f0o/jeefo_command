@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_specs.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-17
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -33,9 +33,9 @@ const NAME        = "build",
 	  DESCRIPTION = 'Compile the source codes.';
 
 describe("class Command (name, description, execute_fn)", () => {
-	var name_argument_test        = argument_test_factory("name"        , 0);
-	var description_argument_test = argument_test_factory("description" , 1);
-	var execute_fn_argument_test  = argument_test_factory("execute_fn"  , 2);
+	var name_argument_test        = argument_test_factory("Command", "name"        , 0);
+	var description_argument_test = argument_test_factory("Command", "description" , 1);
+	var execute_fn_argument_test  = argument_test_factory("Command", "execute_fn"  , 2);
 	var execute_fn = function () {};
 
 	var test_cases = [
@@ -124,10 +124,11 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .add_option(option_definition)
 	describe(".add_option(option_definition)", () => {
-		var option_definition_argument_test = argument_test_factory("option_definition", 0);
-		var option_type_test    = argument_test_factory("option_definition.type"    , 0);
-		var option_name_test    = argument_test_factory("option_definition.name"    , 0);
-		var option_aliases_test = argument_test_factory("option_definition.aliases" , 0);
+		var option_definition_argument_test = argument_test_factory("Command.add_option", "option_definition", 0);
+		var option_type_test                = argument_test_factory("Command.add_option", "option_definition.type"    , 0);
+		var option_name_test                = argument_test_factory("Command.add_option", "option_definition.name"    , 0);
+		var option_aliases_test             = argument_test_factory("Command.add_option", "option_definition.aliases" , 0);
+		var option_aliases_1_test           = argument_test_factory("Command.add_option", "option_definition.aliases[1]" , 0);
 
 		var error_test_cases = [
 			// {{{2 optoin
@@ -194,16 +195,10 @@ describe("class Command (name, description, execute_fn)", () => {
 				var command = new Command(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : "option_name", aliases : error_input });
 			}),
-			{
-				thrower : function () {
-					var command = new Command(NAME, null, execute_fn);
-					command.add_option({ type : "string", name : "option_name", aliases : ['c', 'c'] });
-				},
-				error_message  : "duplicated alias name",
-				argument_name  : "option_definition.aliases[1]",
-				argument_index : 0,
-				argument_value : 'c',
-			}
+			option_aliases_1_test('c', "duplicated alias name", function (error_input) {
+				var command = new Command(NAME, null, execute_fn);
+				command.add_option({ type : "string", name : "option_name", aliases : [error_input, error_input] });
+			}),
 			// }}}2
 		];
 		error_test_cases.forEach(test_invalid_argument_exception);
@@ -416,12 +411,14 @@ describe("class Command (name, description, execute_fn)", () => {
 		param    : "option_name",
 		method   : "get_option",
 		message  : "not a valid option name",
+		fn_name  : "Command.get_option",
 		argument : "option",
 	},
 	{
 		param    : "alias_name",
 		method   : "get_option_by_alias_name",
 		message  : "not a valid alias name",
+		fn_name  : "Command.get_option_by_alias_name",
 		argument : 'c',
 	}].forEach(test_case => {
 		describe(`.${ test_case.method }(${ test_case.param })`, () => {
@@ -431,6 +428,7 @@ describe("class Command (name, description, execute_fn)", () => {
 					command[test_case.method](test_case.argument);
 				},
 				error_message  : test_case.message,
+				function_name  : test_case.fn_name,
 				argument_name  : test_case.param,
 				argument_index : 0,
 				argument_value : test_case.argument
@@ -464,8 +462,8 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .set_alias(alias_name, option)
 	describe(".set_alias(alias_name, option)", () => {
-		var alias_name_argument_test = argument_test_factory("alias_name", 0);
-		var option_argument_test     = argument_test_factory("option", 1);
+		var alias_name_argument_test = argument_test_factory("Command.set_alias", "alias_name", 0);
+		var option_argument_test     = argument_test_factory("Command.set_alias", "option", 1);
 
 		var set_alias_error_cases = [
 			// {{{2 Argument: alias_name
@@ -534,8 +532,8 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .set_options(argument_list, index)
 	describe(".set_options(arguments_list, index)", () => {
-		var args_test   = argument_test_factory("arguments_list" , 0);
-		var index_test  = argument_test_factory("index"         , 1);
+		var args_test   = argument_test_factory("Command.set_options", "arguments_list" , 0);
+		var index_test  = argument_test_factory("Command.set_options", "index"         , 1);
 
 		var test_cases = [
 			// {{{2 args
