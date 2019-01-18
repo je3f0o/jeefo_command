@@ -76,6 +76,9 @@ function _jeefo_command_auto_completion () {
 						;;
 					FilePath)
 						COMPREPLY=(`compgen -f -- "$current_argument"`)
+						for ((i=0; i < ${#COMPREPLY[@]}; ++i)); do
+							[ -d "${COMPREPLY[$i]}" ] && COMPREPLY[$i]="${COMPREPLY[$i]}/"
+						done
 						;;
 					DirectoryPath)
 						COMPREPLY=(`compgen -d -- "$current_argument"`)
