@@ -7,12 +7,13 @@ It will be parse user arguments and execute desired commands with options.
 
 # Available option types
 All type names are case insensitive.
-	1. string
-	2. bool, boolean
-	3. number,
-	4. Enum, enumaretion
-	5. file, FilePath
-	6. dir, directory, DirectoryPath
+
+1. string
+2. bool, boolean
+3. number,
+4. Enum, enumaretion
+5. file, FilePath
+6. dir, directory, DirectoryPath
 
 # Docs
 Coming soon. This time it will come I promise xD
