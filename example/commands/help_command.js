@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : help_command.js
 * Created at  : 2019-01-13
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-21
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -22,10 +22,10 @@ module.exports = {
 	aliases     : ['h', '-h', '--help', '?'],
     description : "Print commands and options description and exit",
     options     : [
-        { name: 'option' , type: "String", aliases: ['o'] } ,
+        { name: 'option' , type: "String", aliases: ['o'], description : "option name" } ,
         { name: 'command', type: "String", aliases: ['c'] } ,
     ],
-    execute : function (options, command_manager, application_name) {
+    execute : function (options, command_manager) {
 		var command, result;
 
 		if (options.command) {
@@ -37,13 +37,13 @@ module.exports = {
 				exit([
 					style("The specified ", "red"),
 					style(options.command, "cyan"),
-					style(` command is not registered. For available options, see \`${ application_name } help\`.`, "red"),
+					style(` command is not registered. For available options, see \`${ command_manager.application_name } help\`.`, "red"),
 				].join(''));
 			}
 
-			result = command.help(application_name);
+			result = command.help(command_manager.application_name);
 		} else {
-			result = command_manager.map(command => command.help(application_name)).join("\n\n") + "\n";
+			result = command_manager.map(command => command.help(command_manager.application_name)).join("\n\n") + "\n";
 		}
 
 		console.log(result);

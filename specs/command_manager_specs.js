@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_manager_specs.js
 * Created at  : 2019-01-08
-* Updated at  : 2019-01-17
+* Updated at  : 2019-01-21
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -333,8 +333,8 @@ describe("class CommandManager (application_name)", () => {
 		});
 	});
 
-	// {{{1 .each(iterator)
-	describe(".each(iterator)", () => {
+	// {{{1 .each(iterator(command, index) => {})
+	describe(".each(iterator(command, index) => {})", () => {
 		var command_manager = new CommandManager(APP_NAME),
 			i = 0, EXPECTED_LENGTH = 5, counter = 0;
 
@@ -342,25 +342,44 @@ describe("class CommandManager (application_name)", () => {
 			command_manager.register({ name : `command${ i }`, execute : execute_fn });
 		}
 
-		command_manager.each(function () { counter += 1; });
+		command_manager.each((command, index) => {
+			(function (expected_index, received_index, command) {
+				it(`Should be index => ${ expected_index }`, () => {
+					expect(expected_index).toBe(received_index);
+				});
+				it(`Should be command.name => 'command${ expected_index }'`, () => {
+					expect(command.name).toBe(`command${ expected_index }`);
+				});
+			}(counter, index, command));
+
+			counter += 1;
+		});
 
 		it(`Should be called ${ EXPECTED_LENGTH } times`, () => {
 			expect(counter).toBe(EXPECTED_LENGTH);
 		});
 	});
 
-	// {{{1 .map(iterator)
-	describe(".map(iterator)", () => {
+	// {{{1 .map(iterator(command, index) => {})
+	describe(".map(iterator(command, index) => {})", () => {
 		var command_manager = new CommandManager(APP_NAME);
 
 		command_manager.register({ name : "command1", execute : execute_fn });
 		command_manager.register({ name : "command2", execute : execute_fn });
 
-		var command_names = command_manager.map(function (command) { return command.name; });
+		var command_names   = command_manager.map(command => { return command.name; });
+		var command_indices = command_manager.map((command, index) => index);
+
+		it("Should be [0, 1]", () => {
+			expect(command_indices[0]).toBe(0);
+			expect(command_indices[1]).toBe(1);
+			expect(command_indices.length).toBe(2);
+		});
 
 		it("Should be ['command1', 'command2']", () => {
 			expect(command_names[0]).toBe("command1");
 			expect(command_names[1]).toBe("command2");
+			expect(command_names.length).toBe(2);
 		});
 	});
 

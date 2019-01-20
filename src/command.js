@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-15
+* Updated at  : 2019-01-21
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -276,14 +276,14 @@ function Command (name, description, execute_fn) {
 			"alias_name", 0, alias_name, "not a valid alias name");
 	};
 
-	// {{{1 .each(iterator)
+	// {{{1 .each(iterator(option, index) => {})
 	this.each = function (interator) {
-		_options_hash_table.each(interator);
+		_options_hash_table.each((value, key, index) => interator(value, index));
 	};
 
-	// {{{1 .map(iterator)
+	// {{{1 .map(iterator(option, index) => {})
 	this.map = function (interator) {
-		return _options_hash_table.map(interator);
+		return _options_hash_table.map((value, key, index) => interator(value, index));
 	};
 	// }}}1
 }
@@ -317,58 +317,3 @@ Command.prototype = {
 };
 
 module.exports = Command;
-// ignore:start
-
-if (require.main === module) {
-	var c = new Command("build", "build source codes.", function (options) {
-		console.log("Hello", options);
-	}), o;
-
-	c.add_option({
-		type : "String ",
-		name : "name",
-		aliases : ['n']
-	});
-	o = c.add_option({
-		type : "file",
-		name : "main",
-		default : "index.js",
-		aliases : ['m']
-	});
-	c.add_option({
-		type : "bool ",
-		name : "include-core",
-		default : false,
-		aliases : ['c']
-	});
-	c.add_option({
-		type : "number ",
-		name : "optimization-level",
-		default : 0,
-		aliases : ['l']
-	});
-	c.add_option({
-		type : "enum",
-		name : "type",
-		list : ["app", "dll"],
-		aliases : ['t']
-	});
-	c.add_option({
-		type : "dir",
-		name : "output-directory",
-		aliases : ['d']
-	});
-
-	console.log(o);
-
-	var args = process.argv,
-		index = 2;
-	
-	c.set_options(args, index);
-
-	console.log(c);
-	console.log(c.help("jeefo"));
-	console.log(c.get_options());
-}
-
-// ignore:end

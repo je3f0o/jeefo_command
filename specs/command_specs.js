@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_specs.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-17
+* Updated at  : 2019-01-21
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -587,7 +587,7 @@ describe("class Command (name, description, execute_fn)", () => {
 		});
 	});
 
-	// {{{1 .each(iterator)
+	// {{{1 .each(iterator(option, index) => {})
 	describe(".each(iterator)", () => {
 		var command = new Command(NAME, null, execute_fn),
 			i = 0, EXPECTED_LENGTH = 5, counter = 0;
@@ -596,25 +596,44 @@ describe("class Command (name, description, execute_fn)", () => {
 			command.add_option({ name : `option${ i }`, type : "string" });
 		}
 
-		command.each(function () { counter += 1; });
+		command.each((option, index) => {
+			(function (expected_index, received_index, option) {
+				it(`Should be index => ${ expected_index }`, () => {
+					expect(expected_index).toBe(received_index);
+				});
+				it(`Should be option.name => '--option${ expected_index }'`, () => {
+					expect(option.name).toBe(`--option${ expected_index }`);
+				});
+			}(counter, index, option));
+
+			counter += 1;
+		});
 
 		it(`Should be called ${ EXPECTED_LENGTH } times`, () => {
 			expect(counter).toBe(EXPECTED_LENGTH);
 		});
 	});
 
-	// {{{1 .map(iterator)
+	// {{{1 .map(iterator(option, index) => {})
 	describe(".map(iterator)", () => {
 		var command = new Command(NAME, null, execute_fn);
 
 		command.add_option({ name : "option1", type : "string" });
 		command.add_option({ name : "option2", type : "string" });
 
-		var option_names = command.map(function (option) { return option.name; });
+		var option_names   = command.map(function (option) { return option.name; });
+		var option_indices = command.map((option, index) => index);
+
+		it("Should be [0, 1]", () => {
+			expect(option_indices[0]).toBe(0);
+			expect(option_indices[1]).toBe(1);
+			expect(option_indices.length).toBe(2);
+		});
 
 		it("Should be ['--option1', '--option2']", () => {
 			expect(option_names[0]).toBe("--option1");
 			expect(option_names[1]).toBe("--option2");
+			expect(option_names.length).toBe(2);
 		});
 	});
 

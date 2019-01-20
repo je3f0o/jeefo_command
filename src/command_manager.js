@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : command_manager.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-17
+* Updated at  : 2019-01-21
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -209,14 +209,14 @@ function CommandManager (application_name) {
 			"alias_name", 0, alias_name, "not a valid alias name");
 	};
 
-	// {{{1 .each(iterator)
+	// {{{1 .each(iterator(command, index) => {})
 	this.each = function (interator) {
-		_commands_hash_table.each(interator);
+		_commands_hash_table.each((value, key, index) => interator(value, index));
 	};
 
-	// {{{1 .map(iterator)
+	// {{{1 .map(iterator(command, index) => {})
 	this.map = function (interator) {
-		return _commands_hash_table.map(interator);
+		return _commands_hash_table.map((value, key, index) => interator(value, index));
 	};
 
 	// {{{1 .execute_commands(arguments_list, index)
@@ -257,7 +257,7 @@ function CommandManager (application_name) {
 		}
 
 		executing_commands_list.forEach(command => {
-			command.execute(command.get_options(), instance, application_name);
+			command.execute(command.get_options(), instance);
 		});
 
 		return index;
@@ -266,29 +266,3 @@ function CommandManager (application_name) {
 }
 
 module.exports = CommandManager;
-// ignore:start
-
-if (require.main === module) {
-	var cm = new CommandManager("jeefo");
-	cm.register({
-		name : "help",
-		aliases: ['h'],
-		options : [
-			{
-				type : "string",
-				name : "command",
-			},
-		],
-		execute : function (options, commands, name) {
-			console.log(this);
-			console.log(name);
-			console.log(options);
-			console.log(commands);
-			console.log("DONE");
-		}
-	});
-
-	cm.execute_commands(['h', '--command', 'build', 'error_command'], 0);
-}
-
-// ignore:end
