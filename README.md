@@ -6,7 +6,7 @@ It will be parse user arguments and execute desired commands with options.
 `npm i jeefo_command` or `yarn add jeefo_command`
 
 # Available option types
-	All type names are case insensitive.
+All type names are case insensitive.
 	1. string
 	2. bool, boolean
 	3. number,
@@ -15,4 +15,4 @@ It will be parse user arguments and execute desired commands with options.
 	6. dir, directory, DirectoryPath
 
 # Docs
-	Coming soon. This time it will come I promise xD
+Coming soon. This time it will come I promise xD
