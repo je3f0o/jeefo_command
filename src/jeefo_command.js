@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name   : command.js
+* File Name   : jeefo_command.js
 * Created at  : 2017-09-01
-* Updated at  : 2019-01-21
+* Updated at  : 2019-01-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -36,7 +36,7 @@ var style                      = require("./misc/style"),
 	InvalidArgumentException   = require("./exceptions/invalid_argument_exception"),
 	argument_validator_factory = require("./validators/argument_validator_factory");
 
-var CONSTRUCTOR_NAME = "Command";
+var CONSTRUCTOR_NAME = "JeefoCommand";
 
 var object_create             = Object.create,
 	description_validator     = new StringValidator({ trim : true, define : false, nullable : true }),
@@ -50,7 +50,7 @@ var name_argument_validator        = argument_validator_factory(CONSTRUCTOR_NAME
 var description_argument_validator = argument_validator_factory(CONSTRUCTOR_NAME, "description", 1, description_validator);
 var execute_fn_argument_validator  = argument_validator_factory(CONSTRUCTOR_NAME, "execute_fn" , 2, new FunctionValidator());
 
-function Command (name, description, execute_fn) {
+function JeefoCommand (name, description, execute_fn) {
 	object_freeze(this, "name", name_argument_validator(name));
 	this.description = description_argument_validator(description);
 	this.execute     = execute_fn_argument_validator(execute_fn);
@@ -288,7 +288,7 @@ function Command (name, description, execute_fn) {
 	// }}}1
 }
 
-Command.prototype = {
+JeefoCommand.prototype = {
 	aliases : [],
 
 	help : function (application_name) {
@@ -316,4 +316,4 @@ Command.prototype = {
 	}
 };
 
-module.exports = Command;
+module.exports = JeefoCommand;

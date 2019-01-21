@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name   : command_manager_specs.js
+* File Name   : jeefo_command_manager_specs.js
 * Created at  : 2019-01-08
-* Updated at  : 2019-01-21
+* Updated at  : 2019-01-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -15,14 +15,15 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 var expect                          = require("expect"),
-	Command                         = require("../src/command"),
-	CommandManager                  = require("../src/command_manager"),
+	JeefoCommand                    = require("../src/jeefo_command"),
+	JeefoCommandManager             = require("../src/jeefo_command_manager"),
 	argument_test_factory           = require("./argument_test_factory"),
 
 	test_readonly                   = require("./testers/test_readonly"),
 	test_invalid_argument_exception = require("./testers/test_invalid_argument_exception");
 
 const APP_NAME                 = "jeefo",
+	  CONSTRUCTOR_NAME         = "JeefoCommandManager",
 	  VALID_COMMAND_DEFINITION = {
 		  name        : "help",
 		  aliases     : [],
@@ -34,25 +35,25 @@ const APP_NAME                 = "jeefo",
 	  },
 	  execute_fn = function () {};
 
-describe("class CommandManager (application_name)", () => {
-	var app_name_argument_test = argument_test_factory("CommandManager", "application_name", 0);
+describe(`class ${ CONSTRUCTOR_NAME } (application_name)`, () => {
+	var app_name_argument_test = argument_test_factory(CONSTRUCTOR_NAME, "application_name", 0);
 
 	var test_cases = [
 		// {{{1 arg[0] : application_name
 		app_name_argument_test(undefined, "undefined", function () {
-			return new CommandManager();
+			return new JeefoCommandManager();
 		}),
 
 		app_name_argument_test(null, "null", function () {
-			return new CommandManager(null);
+			return new JeefoCommandManager(null);
 		}),
 
 		app_name_argument_test(3.14, "not a string", function (error_input) {
-			return new CommandManager(error_input);
+			return new JeefoCommandManager(error_input);
 		}),
 
 		app_name_argument_test("       ", "an empty string", function (error_input) {
-			return new CommandManager(error_input);
+			return new JeefoCommandManager(error_input);
 		}),
 		// }}}1
 	];
@@ -61,7 +62,7 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .application_name
 	describe(".application_name", () => {
-		var command_manager = new CommandManager(APP_NAME);
+		var command_manager = new JeefoCommandManager(APP_NAME);
 
 		test_readonly(command_manager, "application_name");
 
@@ -72,106 +73,100 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .register(command_definition)
 	describe(".register(command_definition)", () => {
-		var command_test         = argument_test_factory("CommandManager.register", "command_definition", 0);
-		var command_name_test    = argument_test_factory("CommandManager.register", "command_definition.name"    , 0);
-		var command_aliases_test = argument_test_factory("CommandManager.register", "command_definition.aliases" , 0);
-		var command_options_test = argument_test_factory("CommandManager.register", "command_definition.options" , 0);
-		var command_execute_test = argument_test_factory("CommandManager.register", "command_definition.execute" , 0);
+		var command_test           = argument_test_factory(`${ CONSTRUCTOR_NAME }.register` , "command_definition"            , 0);
+		var command_name_test      = argument_test_factory(`${ CONSTRUCTOR_NAME }.register` , "command_definition.name"       , 0);
+		var command_aliases_test   = argument_test_factory(`${ CONSTRUCTOR_NAME }.register` , "command_definition.aliases"    , 0);
+		var command_aliases_1_test = argument_test_factory(`${ CONSTRUCTOR_NAME }.register` , "command_definition.aliases[1]" , 0);
+		var command_options_test   = argument_test_factory(`${ CONSTRUCTOR_NAME }.register` , "command_definition.options"    , 0);
+		var command_execute_test   = argument_test_factory(`${ CONSTRUCTOR_NAME }.register` , "command_definition.execute"    , 0);
 
 		var error_test_cases = [
 			// {{{2 command_definition
 			command_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register();
 			}),
 			command_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register(null);
 			}),
 			command_test("error_input", "not an object", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register(error_input);
 			}),
 
 			// {{{2 command_definition.name
 			command_name_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({});
 			}),
 			command_name_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : null });
 			}),
 			command_name_test(3.14, "not a string", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : error_input });
 			}),
 			command_name_test("      ", "an empty string", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : error_input });
 			}),
 			command_name_test(VALID_COMMAND_DEFINITION.name, "duplicated command name", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register(VALID_COMMAND_DEFINITION);
 				command_manager.register(VALID_COMMAND_DEFINITION);
 			}),
 
 			// {{{2 command_definition.aliases
 			command_aliases_test("error_input", "not an array", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : "command", aliases : error_input });
 			}),
-			{
-				thrower : function () {
-					var command_manager = new CommandManager(APP_NAME);
-					command_manager.register({ name : "command", aliases : ['c', 'c'], execute : execute_fn });
-				},
-				error_message  : "duplicated alias name",
-				function_name  : "CommandManager.register",
-				argument_name  : "command_definition.aliases[1]",
-				argument_index : 0,
-				argument_value : 'c'
-			},
+			command_aliases_1_test('c', "duplicated alias name", error_inpit => {
+				var command_manager = new JeefoCommandManager(APP_NAME);
+				command_manager.register({ name : "command", aliases : [error_inpit, error_inpit], execute : execute_fn });
+			}),
 
 			// {{{2 command_definition.options
 			command_options_test("error_input", "not an array", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : "command", options : error_input });
 			}),
 
 			// {{{2 command_definition.options
 			command_execute_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : "command" });
 			}),
 			command_execute_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : "command", execute : null });
 			}),
 			command_execute_test("error_input", "not a function", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.register({ name : "command", execute : error_input });
 			}),
 			// }}}2
 		];
 		error_test_cases.forEach(test_invalid_argument_exception);
 
-		describe("Return new instance of class Command", () => {
-			it("Should be return instance of Command", () => {
-				var command_manager = new CommandManager(APP_NAME),
+		describe("Return new instance of class JeefoCommand", () => {
+			it("Should be return instance of JeefoCommand", () => {
+				var command_manager = new JeefoCommandManager(APP_NAME),
 					command         = command_manager.register({ name : "command", execute : execute_fn });
 
-				expect(command instanceof Command).toBe(true);
+				expect(command instanceof JeefoCommand).toBe(true);
 			});
 
 			describe(".aliases", () => {
-				var command_manager = new CommandManager(APP_NAME),
+				var command_manager = new JeefoCommandManager(APP_NAME),
 					command         = command_manager.register({ name : "command", execute : execute_fn });
 
 				test_readonly(command, "aliases");
 
 				it("Should not be affected when directly modified", () => {
-					var command_manager = new CommandManager(APP_NAME),
+					var command_manager = new JeefoCommandManager(APP_NAME),
 						command         = command_manager.register({ name : "command", execute : execute_fn });
 
 					expect(command.aliases.length).toBe(0);
@@ -181,14 +176,14 @@ describe("class CommandManager (application_name)", () => {
 				});
 
 				it("Should be return new array instance every time read", () => {
-					var command_manager = new CommandManager(APP_NAME),
+					var command_manager = new JeefoCommandManager(APP_NAME),
 						command         = command_manager.register({ name : "command", execute : execute_fn });
 
 					expect(command.aliases).not.toBe(command.aliases);
 				});
 
 				it("Should be modified from class CommandManager instance", () => {
-					var command_manager = new CommandManager(APP_NAME),
+					var command_manager = new JeefoCommandManager(APP_NAME),
 						command         = command_manager.register({ name : "help", execute : execute_fn });
 
 					expect(command.aliases.length).toBe(0);
@@ -203,29 +198,29 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .set_alias(alias_name, command)
 	describe(".set_alias(alias_name, command)", () => {
-		var alias_name_argument_test = argument_test_factory("CommandManager.set_alias", "alias_name", 0);
-		var command_argument_test    = argument_test_factory("CommandManager.set_alias", "command", 1);
+		var alias_name_argument_test = argument_test_factory(`${ CONSTRUCTOR_NAME }.set_alias`, "alias_name", 0);
+		var command_argument_test    = argument_test_factory(`${ CONSTRUCTOR_NAME }.set_alias`, "command", 1);
 
 		var set_alias_error_cases = [
 			// {{{2 Argument: alias_name
 			alias_name_argument_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias();
 			}),
 			alias_name_argument_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias(null);
 			}),
 			alias_name_argument_test(3.14, "not a string", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias(error_input);
 			}),
 			alias_name_argument_test("        ", "an empty string", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias(error_input);
 			}),
 			alias_name_argument_test('c', "duplicated alias name", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME),
+				var command_manager = new JeefoCommandManager(APP_NAME),
 					command         = command_manager.register({
 						name    : "command",
 						aliases : [error_input],
@@ -237,19 +232,19 @@ describe("class CommandManager (application_name)", () => {
 
 			// {{{2 Argument: command
 			command_argument_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias("key");
 			}),
 			command_argument_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias("key", null);
 			}),
 			command_argument_test("error_input", "not an object", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.set_alias("key", error_input);
 			}),
-			command_argument_test(new Command("command", null, execute_fn), "not a valid command", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+			command_argument_test(new JeefoCommand("command", null, execute_fn), "not a valid command", function (error_input) {
+				var command_manager = new JeefoCommandManager(APP_NAME);
 
 				command_manager.register({ name : "command", execute : execute_fn });
 				command_manager.set_alias('c', error_input);
@@ -260,7 +255,7 @@ describe("class CommandManager (application_name)", () => {
 		set_alias_error_cases.forEach(test_invalid_argument_exception);
 
 		it("Should be pass", () => {
-			var command_manager   = new CommandManager(APP_NAME),
+			var command_manager   = new JeefoCommandManager(APP_NAME),
 				command           = command_manager.register(VALID_COMMAND_DEFINITION),
 				has_error_ocurred = false;
 
@@ -277,7 +272,7 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .get_commands_length()
 	describe(".get_commands_length()", () => {
-		var command_manager = new CommandManager(APP_NAME),
+		var command_manager = new JeefoCommandManager(APP_NAME),
 			i = 0, EXPECTED_LENGTH = 5;
 
 		for (; i < EXPECTED_LENGTH; ++i) {
@@ -297,20 +292,20 @@ describe("class CommandManager (application_name)", () => {
 		param    : "command_name",
 		method   : "get_command",
 		message  : "not a valid command name",
-		fn_name  : "CommandManager.get_command",
+		fn_name  : `${ CONSTRUCTOR_NAME }.get_command`,
 		argument : "command",
 	},
 	{
 		param    : "alias_name",
 		method   : "get_command_by_alias_name",
 		message  : "not a valid alias name",
-		fn_name  : "CommandManager.get_command_by_alias_name",
+		fn_name  : `${ CONSTRUCTOR_NAME }.get_command_by_alias_name`,
 		argument : 'c',
 	}].forEach(test_case => {
 		describe(`.${ test_case.method }(${ test_case.param })`, () => {
 			test_invalid_argument_exception({
 				thrower : function () {
-					var command_manager = new CommandManager(APP_NAME);
+					var command_manager = new JeefoCommandManager(APP_NAME);
 					command_manager[test_case.method](test_case.argument);
 				},
 				error_message  : test_case.message,
@@ -321,7 +316,7 @@ describe("class CommandManager (application_name)", () => {
 			});
 
 			it("Should be pass", () => {
-				var command_manager = new CommandManager(APP_NAME),
+				var command_manager = new JeefoCommandManager(APP_NAME),
 					option  = command_manager.register({
 						name    : "command",
 						aliases : ['c'],
@@ -335,7 +330,7 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .each(iterator(command, index) => {})
 	describe(".each(iterator(command, index) => {})", () => {
-		var command_manager = new CommandManager(APP_NAME),
+		var command_manager = new JeefoCommandManager(APP_NAME),
 			i = 0, EXPECTED_LENGTH = 5, counter = 0;
 
 		for (; i < EXPECTED_LENGTH; ++i) {
@@ -362,7 +357,7 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .map(iterator(command, index) => {})
 	describe(".map(iterator(command, index) => {})", () => {
-		var command_manager = new CommandManager(APP_NAME);
+		var command_manager = new JeefoCommandManager(APP_NAME);
 
 		command_manager.register({ name : "command1", execute : execute_fn });
 		command_manager.register({ name : "command2", execute : execute_fn });
@@ -385,53 +380,53 @@ describe("class CommandManager (application_name)", () => {
 
 	// {{{1 .execute_commands(arguments_list, index)
 	describe(".execute_commands(arguments_list, index)", () => {
-		var arguments_list_test = argument_test_factory("CommandManager.execute_commands", "arguments_list", 0),
-			index_test          = argument_test_factory("CommandManager.execute_commands", "index"         , 1);
+		var arguments_list_test = argument_test_factory(`${ CONSTRUCTOR_NAME }.execute_commands`, "arguments_list", 0),
+			index_test          = argument_test_factory(`${ CONSTRUCTOR_NAME }.execute_commands`, "index"         , 1);
 
 		var error_test_cases = [
 			// {{{2 Validating argument: arguments_list
 			arguments_list_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.execute_commands();
 			}),
 			arguments_list_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.execute_commands(null);
 			}),
 			arguments_list_test("error_input", "not an array", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.execute_commands(error_input);
 			}),
 
 			// {{{2 Validating argument: index
 			index_test(undefined, "undefined", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.execute_commands([]);
 			}),
 			index_test(null, "null", function () {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.execute_commands([], null);
 			}),
 			index_test("error_input", "not a number", function (error_input) {
-				var command_manager = new CommandManager(APP_NAME);
+				var command_manager = new JeefoCommandManager(APP_NAME);
 				command_manager.execute_commands([], error_input);
 			}),
 			// {{{2 Validating arguments[index]: (Special cases)
 			{
 				thrower : function () {
-					var command_manager = new CommandManager(APP_NAME);
+					var command_manager = new JeefoCommandManager(APP_NAME);
 					command_manager.register({ name : "help", execute : execute_fn });
 					command_manager.execute_commands(["help", "error_command"], 0);
 				},
 				error_message  : "not a valid command name",
-				function_name  : "CommandManager.execute_commands",
+				function_name  : `${ CONSTRUCTOR_NAME }.execute_commands`,
 				argument_name  : "arguments_list[1]",
 				argument_index : 0,
 				argument_value : "error_command",
 			},
 			{
 				thrower : function () {
-					var command_manager = new CommandManager(APP_NAME);
+					var command_manager = new JeefoCommandManager(APP_NAME);
 					command_manager.register({
 						name : "help",
 						execute : execute_fn,
@@ -446,14 +441,14 @@ describe("class CommandManager (application_name)", () => {
 					command_manager.execute_commands(["help", "--command", "build", "error_command"], 0);
 				},
 				error_message  : "not a valid command name",
-				function_name  : "CommandManager.execute_commands",
+				function_name  : `${ CONSTRUCTOR_NAME }.execute_commands`,
 				argument_name  : "arguments_list[3]",
 				argument_index : 0,
 				argument_value : "error_command",
 			},
 			{
 				thrower : function () {
-					var command_manager = new CommandManager(APP_NAME);
+					var command_manager = new JeefoCommandManager(APP_NAME);
 					command_manager.register({
 						name    : "help",
 						execute : execute_fn,
@@ -471,7 +466,7 @@ describe("class CommandManager (application_name)", () => {
 					command_manager.execute_commands(args, 0);
 				},
 				error_message  : "not a valid command name",
-				function_name  : "CommandManager.execute_commands",
+				function_name  : `${ CONSTRUCTOR_NAME }.execute_commands`,
 				argument_name  : "arguments_list[5]",
 				argument_index : 0,
 				argument_value : "error_command",
@@ -481,7 +476,7 @@ describe("class CommandManager (application_name)", () => {
 		error_test_cases.forEach(test_invalid_argument_exception);
 
 		it("Should be pass", () => {
-			var command_manager        = new CommandManager(APP_NAME),
+			var command_manager        = new JeefoCommandManager(APP_NAME),
 				return_index           = -1,
 				has_error_ocurred      = false,
 				help_command_executed  = false,

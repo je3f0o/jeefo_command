@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name   : command_specs.js
+* File Name   : jeefo_command_specs.js
 * Created at  : 2019-01-04
-* Updated at  : 2019-01-21
+* Updated at  : 2019-01-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -15,7 +15,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 var expect                          = require("expect"),
-	Command                         = require("../src/command"),
+	JeefoCommand                    = require("../src/jeefo_command"),
 	argument_test_factory           = require("./argument_test_factory"),
 
 	IBaseOption                     = require("../src/options/i_base_option"),
@@ -29,53 +29,54 @@ var expect                          = require("expect"),
 	test_readonly                   = require("./testers/test_readonly"),
 	test_invalid_argument_exception = require("./testers/test_invalid_argument_exception");
 
-const NAME        = "build",
-	  DESCRIPTION = 'Compile the source codes.';
+const NAME             = "build",
+	  DESCRIPTION      = 'Compile the source codes.',
+	  CONSTRUCTOR_NAME = "JeefoCommand";
 
-describe("class Command (name, description, execute_fn)", () => {
-	var name_argument_test        = argument_test_factory("Command", "name"        , 0);
-	var description_argument_test = argument_test_factory("Command", "description" , 1);
-	var execute_fn_argument_test  = argument_test_factory("Command", "execute_fn"  , 2);
+describe(`class ${ CONSTRUCTOR_NAME } (name, description, execute_fn)`, () => {
+	var name_argument_test        = argument_test_factory(CONSTRUCTOR_NAME, "name"        , 0);
+	var description_argument_test = argument_test_factory(CONSTRUCTOR_NAME, "description" , 1);
+	var execute_fn_argument_test  = argument_test_factory(CONSTRUCTOR_NAME, "execute_fn"  , 2);
 	var execute_fn = function () {};
 
 	var test_cases = [
 		// {{{1 arg[0] : name
 		name_argument_test(undefined, "undefined", function () {
-			return new Command();
+			return new JeefoCommand();
 		}),
 
 		name_argument_test(null, "null", function () {
-			return new Command(null);
+			return new JeefoCommand(null);
 		}),
 
 		name_argument_test(3.14, "not a string", function (error_input) {
-			return new Command(error_input);
+			return new JeefoCommand(error_input);
 		}),
 
 		name_argument_test("       ", "an empty string", function (error_input) {
-			return new Command(error_input);
+			return new JeefoCommand(error_input);
 		}),
 
 		// {{{1 arg[1] : description
 		description_argument_test(3.14, "not a string", function (error_input) {
-			return new Command(NAME, error_input);
+			return new JeefoCommand(NAME, error_input);
 		}),
 
 		description_argument_test("       ", "an empty string", function (error_input) {
-			return new Command(NAME, error_input);
+			return new JeefoCommand(NAME, error_input);
 		}),
 
 		// {{{1 arg[3] : execute_fn
 		execute_fn_argument_test(undefined, "undefined", function () {
-			return new Command(NAME, DESCRIPTION);
+			return new JeefoCommand(NAME, DESCRIPTION);
 		}),
 
 		execute_fn_argument_test(null, "null", function () {
-			return new Command(NAME, DESCRIPTION, null);
+			return new JeefoCommand(NAME, DESCRIPTION, null);
 		}),
 
 		execute_fn_argument_test({}, "not a function", function (error_input) {
-			return new Command(NAME, DESCRIPTION, error_input);
+			return new JeefoCommand(NAME, DESCRIPTION, error_input);
 		}),
 		// }}}1
 	];
@@ -84,7 +85,7 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .name
 	describe(".name", () => {
-		var command = new Command(NAME, null, execute_fn);
+		var command = new JeefoCommand(NAME, null, execute_fn);
 		test_readonly(command, "name");
 
 		it(`Should be got '${ NAME }'`, () => {
@@ -101,7 +102,7 @@ describe("class Command (name, description, execute_fn)", () => {
 				description = `'${ description }'`;
 			}
 			it(`Should be got ${ description }`, () => {
-				var command = new Command(NAME, test_case.description, execute_fn);
+				var command = new JeefoCommand(NAME, test_case.description, execute_fn);
 				expect(command.description).toBe(test_case.description);
 			});
 		});
@@ -116,7 +117,7 @@ describe("class Command (name, description, execute_fn)", () => {
 				description = `'${ description }'`;
 			}
 			it(`Should be got ${ description }`, () => {
-				var command = new Command(NAME, test_case.description, execute_fn);
+				var command = new JeefoCommand(NAME, test_case.description, execute_fn);
 				expect(command.description).toBe(test_case.description);
 			});
 		});
@@ -124,79 +125,79 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .add_option(option_definition)
 	describe(".add_option(option_definition)", () => {
-		var option_definition_argument_test = argument_test_factory("Command.add_option", "option_definition", 0);
-		var option_type_test                = argument_test_factory("Command.add_option", "option_definition.type"    , 0);
-		var option_name_test                = argument_test_factory("Command.add_option", "option_definition.name"    , 0);
-		var option_aliases_test             = argument_test_factory("Command.add_option", "option_definition.aliases" , 0);
-		var option_aliases_1_test           = argument_test_factory("Command.add_option", "option_definition.aliases[1]" , 0);
+		var option_definition_argument_test = argument_test_factory(`${ CONSTRUCTOR_NAME }.add_option`, "option_definition", 0);
+		var option_type_test                = argument_test_factory(`${ CONSTRUCTOR_NAME }.add_option`, "option_definition.type"    , 0);
+		var option_name_test                = argument_test_factory(`${ CONSTRUCTOR_NAME }.add_option`, "option_definition.name"    , 0);
+		var option_aliases_test             = argument_test_factory(`${ CONSTRUCTOR_NAME }.add_option`, "option_definition.aliases" , 0);
+		var option_aliases_1_test           = argument_test_factory(`${ CONSTRUCTOR_NAME }.add_option`, "option_definition.aliases[1]" , 0);
 
 		var error_test_cases = [
 			// {{{2 optoin
 			option_definition_argument_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option();
 			}),
 			option_definition_argument_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option(null);
 			}),
 			option_definition_argument_test("error_input", "not an object", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option(error_input);
 			}),
 
 			// {{{2 optoin.type
 			option_type_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({});
 			}),
 			option_type_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : null });
 			}),
 			option_type_test(3.14, "not a string", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : error_input });
 			}),
 			option_type_test('     ', "an empty string", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : error_input });
 			}),
 			option_type_test("Int32", "not a valid option type", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : error_input });
 			}),
 
 			// {{{2 optoin.name
 			option_name_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string" });
 			}),
 			option_name_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : null });
 			}),
 			option_name_test(3.14, "not a string", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : error_input });
 			}),
 			option_name_test("     ", "an empty string", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : error_input });
 			}),
 			option_name_test("option_name", "duplicated option name", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : error_input });
 				command.add_option({ type : "string", name : error_input });
 			}),
 
 			// {{{2 optoin.aliases
 			option_aliases_test({}, "not an array", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : "option_name", aliases : error_input });
 			}),
 			option_aliases_1_test('c', "duplicated alias name", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : "option_name", aliases : [error_input, error_input] });
 			}),
 			// }}}2
@@ -323,7 +324,7 @@ describe("class Command (name, description, execute_fn)", () => {
 
 		test_case_groups.forEach(test_group => {
 			test_group.cases.forEach(test_case => {
-				var command = new Command(NAME, null, execute_fn),
+				var command = new JeefoCommand(NAME, null, execute_fn),
 					option  = command.add_option(test_case);
 
 				if (test_case.aliases) {
@@ -347,20 +348,20 @@ describe("class Command (name, description, execute_fn)", () => {
 
 		describe("Return new instance of class IBaseOption", () => {
 			it("Should be return instance of IBaseOption", () => {
-				var command = new Command(NAME, null, execute_fn),
+				var command = new JeefoCommand(NAME, null, execute_fn),
 					option  = command.add_option({ name : "command", type : "string" });
 
 				expect(option instanceof IBaseOption).toBe(true);
 			});
 
 			describe(".aliases", () => {
-				var command = new Command(NAME, null, execute_fn),
+				var command = new JeefoCommand(NAME, null, execute_fn),
 					option  = command.add_option({ name : "command", type : "string" });
 
 				test_readonly(option, "aliases");
 
 				it("Should not be affected when directly modified", () => {
-					var command = new Command(NAME, null, execute_fn),
+					var command = new JeefoCommand(NAME, null, execute_fn),
 						option  = command.add_option({ name : "command", type : "string" });
 
 					expect(option.aliases.length).toBe(0);
@@ -370,14 +371,14 @@ describe("class Command (name, description, execute_fn)", () => {
 				});
 
 				it("Should be return new array instance every time read", () => {
-					var command = new Command(NAME, null, execute_fn),
+					var command = new JeefoCommand(NAME, null, execute_fn),
 						option  = command.add_option({ name : "command", type : "string" });
 
 					expect(option.aliases).not.toBe(option.aliases);
 				});
 
-				it("Should be modified from class Command instance", () => {
-					var command = new Command(NAME, null, execute_fn),
+				it(`Should be modified from class ${ CONSTRUCTOR_NAME } instance`, () => {
+					var command = new JeefoCommand(NAME, null, execute_fn),
 						option  = command.add_option({ name : "command", type : "string" });
 
 					expect(option.aliases.length).toBe(0);
@@ -392,7 +393,7 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .get_options_length()
 	describe(".get_options_length()", () => {
-		var command = new Command(NAME, null, execute_fn), i = 0, EXPECTED_LENGTH = 5;
+		var command = new JeefoCommand(NAME, null, execute_fn), i = 0, EXPECTED_LENGTH = 5;
 
 		for (; i < EXPECTED_LENGTH; ++i) {
 			it(`Should be ${ i }`, () => {
@@ -411,20 +412,20 @@ describe("class Command (name, description, execute_fn)", () => {
 		param    : "option_name",
 		method   : "get_option",
 		message  : "not a valid option name",
-		fn_name  : "Command.get_option",
+		fn_name  : `${ CONSTRUCTOR_NAME }.get_option`,
 		argument : "option",
 	},
 	{
 		param    : "alias_name",
 		method   : "get_option_by_alias_name",
 		message  : "not a valid alias name",
-		fn_name  : "Command.get_option_by_alias_name",
+		fn_name  : `${ CONSTRUCTOR_NAME }.get_option_by_alias_name`,
 		argument : 'c',
 	}].forEach(test_case => {
 		describe(`.${ test_case.method }(${ test_case.param })`, () => {
 			test_invalid_argument_exception({
 				thrower : function () {
-					var command = new Command(NAME, null, execute_fn);
+					var command = new JeefoCommand(NAME, null, execute_fn);
 					command[test_case.method](test_case.argument);
 				},
 				error_message  : test_case.message,
@@ -435,7 +436,7 @@ describe("class Command (name, description, execute_fn)", () => {
 			});
 
 			it("Should be pass", () => {
-				var command = new Command(NAME, null, execute_fn),
+				var command = new JeefoCommand(NAME, null, execute_fn),
 					option  = command.add_option({ name : "option", type : "string", aliases : ['c'] });
 
 				expect(command[test_case.method](test_case.argument)).toBe(option);
@@ -446,7 +447,7 @@ describe("class Command (name, description, execute_fn)", () => {
 	// {{{1 .get_options()
 	describe(".get_options()", () => {
 		var value   = "hello world",
-			command = new Command(NAME, null, execute_fn);
+			command = new JeefoCommand(NAME, null, execute_fn);
 
 		command.add_option({ type : "string", name : "command", aliases : ['c'] });
 
@@ -462,29 +463,29 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .set_alias(alias_name, option)
 	describe(".set_alias(alias_name, option)", () => {
-		var alias_name_argument_test = argument_test_factory("Command.set_alias", "alias_name", 0);
-		var option_argument_test     = argument_test_factory("Command.set_alias", "option", 1);
+		var alias_name_argument_test = argument_test_factory(`${ CONSTRUCTOR_NAME }.set_alias`, "alias_name", 0);
+		var option_argument_test     = argument_test_factory(`${ CONSTRUCTOR_NAME }.set_alias`, "option", 1);
 
 		var set_alias_error_cases = [
 			// {{{2 Argument: alias_name
 			alias_name_argument_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias();
 			}),
 			alias_name_argument_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias(null);
 			}),
 			alias_name_argument_test(3.14, "not a string", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias(error_input);
 			}),
 			alias_name_argument_test("        ", "an empty string", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias(error_input);
 			}),
 			alias_name_argument_test('c', "duplicated alias name", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				var option  = command.add_option({ type : "string", name : "command_name", aliases : [error_input] });
 
 				command.set_alias(error_input, option);
@@ -492,19 +493,19 @@ describe("class Command (name, description, execute_fn)", () => {
 
 			// {{{2 Argument: option
 			option_argument_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias("key");
 			}),
 			option_argument_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias("key", null);
 			}),
 			option_argument_test("error_input", "not an object", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_alias("key", error_input);
 			}),
 			option_argument_test(new StringOption("option"), "not a valid option", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.add_option({ type : "string", name : "option" });
 
 				command.set_alias('o', error_input);
@@ -515,7 +516,7 @@ describe("class Command (name, description, execute_fn)", () => {
 		set_alias_error_cases.forEach(test_invalid_argument_exception);
 
 		it("Should be pass", () => {
-			var command           = new Command(NAME, null, execute_fn),
+			var command           = new JeefoCommand(NAME, null, execute_fn),
 				option            = command.add_option({ type : "string", name : "command_name" }),
 				has_error_ocurred = false;
 
@@ -532,35 +533,35 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .set_options(argument_list, index)
 	describe(".set_options(arguments_list, index)", () => {
-		var args_test   = argument_test_factory("Command.set_options", "arguments_list" , 0);
-		var index_test  = argument_test_factory("Command.set_options", "index"         , 1);
+		var args_test   = argument_test_factory(`${ CONSTRUCTOR_NAME }.set_options`, "arguments_list" , 0);
+		var index_test  = argument_test_factory(`${ CONSTRUCTOR_NAME }.set_options`, "index"         , 1);
 
 		var test_cases = [
 			// {{{2 args
 			args_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_options();
 			}),
 			args_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_options(null);
 			}),
 			args_test({}, "not an array", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_options(error_input);
 			}),
 
 			// {{{2 index
 			index_test(undefined, "undefined", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_options([]);
 			}),
 			index_test(null, "null", function () {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_options([], null);
 			}),
 			index_test('0', "not a number", function (error_input) {
-				var command = new Command(NAME, null, execute_fn);
+				var command = new JeefoCommand(NAME, null, execute_fn);
 				command.set_options([], error_input);
 			}),
 			// }}}2
@@ -569,7 +570,7 @@ describe("class Command (name, description, execute_fn)", () => {
 		test_cases.forEach(test_invalid_argument_exception);
 
 		it("Should be pass", () => {
-			var command           = new Command(NAME, null, execute_fn),
+			var command           = new JeefoCommand(NAME, null, execute_fn),
 				option            = command.add_option({ type : "string", name : "command", aliases : ['c'] }),
 				new_value         = "value",
 				has_error_ocurred = false;
@@ -589,7 +590,7 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .each(iterator(option, index) => {})
 	describe(".each(iterator)", () => {
-		var command = new Command(NAME, null, execute_fn),
+		var command = new JeefoCommand(NAME, null, execute_fn),
 			i = 0, EXPECTED_LENGTH = 5, counter = 0;
 
 		for (; i < EXPECTED_LENGTH; ++i) {
@@ -616,7 +617,7 @@ describe("class Command (name, description, execute_fn)", () => {
 
 	// {{{1 .map(iterator(option, index) => {})
 	describe(".map(iterator)", () => {
-		var command = new Command(NAME, null, execute_fn);
+		var command = new JeefoCommand(NAME, null, execute_fn);
 
 		command.add_option({ name : "option1", type : "string" });
 		command.add_option({ name : "option2", type : "string" });

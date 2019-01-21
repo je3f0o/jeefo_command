@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-* File Name   : command_manager.js
+* File Name   : jeefo_command_manager.js
 * Created at  : 2019-01-03
-* Updated at  : 2019-01-21
+* Updated at  : 2019-01-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -14,8 +14,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var Command                  = require("./command"),
-	HashTable                = require("./hash_table"),
+var HashTable                = require("./hash_table"),
+	JeefoCommand             = require("./jeefo_command"),
 	object_freeze            = require("./object_freeze"),
 
 	ArrayValidator           = require("./validators/array_validator"),
@@ -27,7 +27,7 @@ var Command                  = require("./command"),
 
 	InvalidArgumentException = require("./exceptions/invalid_argument_exception");
 
-var CONSTRUCTOR_NAME = "CommandManager";
+var CONSTRUCTOR_NAME = "JeefoCommandManager";
 
 var object_create             = Object.create,
 	object_validator          = new ObjectValidator(),
@@ -38,7 +38,7 @@ var object_create             = Object.create,
 	required_string_validator = new StringValidator({ trim : true }),
 	required_number_validator = new NumberValidator();
 
-function CommandManager (application_name) {
+function JeefoCommandManager (application_name) {
 	var instance             = this,
 		_aliases_map         = object_create(null),
 		_aliases_hash_table  = new HashTable(),
@@ -112,7 +112,7 @@ function CommandManager (application_name) {
 				"command_definition.name", 0, name, "duplicated command name");
 		}
 
-		command = new Command(name, command_definition.description, command_definition.execute);
+		command = new JeefoCommand(name, command_definition.description, command_definition.execute);
 		_commands_hash_table.add(name, command);
 
 		(command_definition.options || []).forEach(option => {
@@ -171,7 +171,7 @@ function CommandManager (application_name) {
 					"command", 1, command, err.message);
 			}
 
-			if (command instanceof Command === false ||
+			if (command instanceof JeefoCommand === false ||
 				command !== _commands_hash_table.get_value(command.name)
 			) {
 				throw new InvalidArgumentException(`${ CONSTRUCTOR_NAME }.set_alias`,
@@ -265,4 +265,4 @@ function CommandManager (application_name) {
 	// }}}1
 }
 
-module.exports = CommandManager;
+module.exports = JeefoCommandManager;

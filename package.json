@@ -9,11 +9,11 @@
   "homepage": "https://github.com/je3f0o/jeefo_command",
   "license": "MIT",
   "copyright": "2017",
-  "main": "index.js",
+  "main": "src/jeefo_command_manager.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha \"specs/**/*_specs.js\"",
-    "test_command": "./node_modules/mocha/bin/mocha specs/command_specs.js",
-    "test_command_manager": "./node_modules/mocha/bin/mocha specs/command_manager_specs.js",
+    "test_command": "./node_modules/mocha/bin/mocha specs/jeefo_command_specs.js",
+    "test_command_manager": "./node_modules/mocha/bin/mocha specs/jeefo_command_manager_specs.js",
     "test_options": "./node_modules/mocha/bin/mocha specs/options/*_specs.js",
     "test_validators": "./node_modules/mocha/bin/mocha specs/validators/*_specs.js"
   },
