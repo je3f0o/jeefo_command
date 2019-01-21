@@ -1,7 +1,7 @@
 /* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 * File Name   : hello_world.js
 * Created at  : 2017-08-31
-* Updated at  : 2019-01-16
+* Updated at  : 2019-01-22
 * Author      : jeefo
 * Purpose     :
 * Description :
@@ -14,12 +14,12 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-var pkg            = require("../package"),
-	exit           = require("../helpers/exit"),
-	style          = require("../src/misc/style"),
-	CommandManager = require("../src/command_manager");
+var pkg                 = require("../package"),
+	exit                = require("../helpers/exit"),
+	style               = require("../src/misc/style"),
+	JeefoCommandManager = require("../src/jeefo_command_manager");
 
-var command_manager = new CommandManager(pkg.name);
+var command_manager = new JeefoCommandManager(pkg.name);
 
 function generate_execute_function (command_name) {
 	return function execute () {
