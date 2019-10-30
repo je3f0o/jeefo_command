@@ -15,4 +15,4 @@
 
 // ignore:end
 
-module.exports = require("./jeefo_command");
+module.exports = require("./jeefo_command_manager");
