@@ -1,9 +1,9 @@
 # jeefo_command
-A library or node module designed for create new command line tools.
-It will be parse user arguments and execute desired commands with options.
+NodeJS library designed for create a new command line interface. It will be 
+parse user arguments and execute desired commands with desired options.
 
 ## Install
-`npm i jeefo_command` or `yarn add jeefo_command`
+`npm i jeefo_command`
 
 ## Available option types
 All type names are case insensitive.
@@ -16,4 +16,8 @@ All type names are case insensitive.
 6. dir, directory, DirectoryPath
 
 ## Docs
-Coming soon. This time it will come I promise xD
+Sorry no docs. Please try to read [example/hello_world.js](example/hello_world.js).
+Try to run
+```sh
+$ node example/hello_world.js ?
+```

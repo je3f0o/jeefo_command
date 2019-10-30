@@ -210,13 +210,13 @@ function JeefoCommandManager (application_name) {
 	};
 
 	// {{{1 .each(iterator(command, index) => {})
-	this.each = function (interator) {
-		_commands_hash_table.each((value, key, index) => interator(value, index));
+	this.each = function (iterator) {
+		_commands_hash_table.each((value, key, index) => iterator(value, index));
 	};
 
 	// {{{1 .map(iterator(command, index) => {})
-	this.map = function (interator) {
-		return _commands_hash_table.map((value, key, index) => interator(value, index));
+	this.map = function (iterator) {
+		return _commands_hash_table.map((value, key, index) => iterator(value, index));
 	};
 
 	// {{{1 .execute_commands(arguments_list, index)

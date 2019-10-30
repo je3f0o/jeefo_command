@@ -1,7 +1,7 @@
 {
-  "name": "jeefo_command",
-  "version": "0.0.20",
-  "description": "Node module designed for create new command line tools. It will be parse user arguments and execute desired commands with options.",
+  "name": "@jeefo/command",
+  "version": "0.0.1",
+  "description": "Node module designed for create a new command line interface. It will be parse user arguments and execute desired commands with desired options.",
   "author": {
     "name": "je3f0o",
     "email": "je3f0o@gmail.com"
@@ -11,6 +11,8 @@
   "copyright": "2017",
   "main": "src/jeefo_command_manager.js",
   "scripts": {
+    "save": "git add . && git c \"`date`\" && git p",
+    "publish": "bash publish.sh",
     "test": "./node_modules/mocha/bin/mocha \"specs/**/*_specs.js\"",
     "test_command": "./node_modules/mocha/bin/mocha specs/jeefo_command_specs.js",
     "test_command_manager": "./node_modules/mocha/bin/mocha specs/jeefo_command_manager_specs.js",
@@ -24,6 +26,7 @@
   "keywords": [
     "cli",
     "jeefo",
+    "je3f0o",
     "command",
     "jeefo_command"
   ],

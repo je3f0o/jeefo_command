@@ -1,0 +1,5 @@
+# Node Modules
+node_modules
+
+# Temp folder in case you forget to delete
+temp
