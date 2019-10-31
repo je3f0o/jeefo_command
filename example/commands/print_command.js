@@ -15,8 +15,8 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 const style                = require("../../src/misc/style");
-const exit                 = require("../helpers/exit");
-const exit_required_option = require("../helpers/exit_required_option");
+const exit                 = require("../../src/helpers/exit");
+const exit_required_option = require("../../src/helpers/exit_required_option");
 
 module.exports = {
 	name        : "print",

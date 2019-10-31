@@ -17,7 +17,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 const pkg                 = require("../package");
-const exit                = require("./helpers/exit");
+const exit                = require("../src/helpers/exit");
 const style               = require("../src/misc/style");
 const JeefoCommandManager = require("../src/jeefo_command_manager");
 

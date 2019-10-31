@@ -15,7 +15,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 // ignore:end
 
 const pkg  = require("../../package");
-const exit = require("../helpers/exit");
+const exit = require("../../src/helpers/exit");
 
 module.exports = {
     name        : "version",

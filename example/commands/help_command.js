@@ -14,7 +14,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 // ignore:end
 
-const exit  = require("../helpers/exit");
+const exit  = require("../../src/helpers/exit");
 const style = require("../../src/misc/style");
 
 module.exports = {

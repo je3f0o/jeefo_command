@@ -12,7 +12,6 @@
   "main": "index.js",
   "scripts": {
     "save": "git add . && git c \"`date`\" && git p",
-    "publish": "bash publish.sh",
     "test": "./node_modules/mocha/bin/mocha \"specs/**/*_specs.js\"",
     "test_command": "./node_modules/mocha/bin/mocha specs/jeefo_command_specs.js",
     "test_command_manager": "./node_modules/mocha/bin/mocha specs/jeefo_command_manager_specs.js",
