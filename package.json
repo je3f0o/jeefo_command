@@ -1,37 +1,39 @@
 {
-  "name": "@jeefo/command",
-  "version": "0.0.1",
-  "description": "Node module designed for create a new command line interface. It will be parse user arguments and execute desired commands with desired options.",
-  "author": {
-    "name": "je3f0o",
-    "email": "je3f0o@gmail.com"
-  },
-  "homepage": "https://github.com/je3f0o/jeefo_command",
-  "license": "MIT",
-  "copyright": "2017",
-  "main": "index.js",
-  "scripts": {
-    "save": "git add . && git c \"`date`\" && git p",
-    "test": "./node_modules/mocha/bin/mocha \"specs/**/*_specs.js\"",
-    "test_command": "./node_modules/mocha/bin/mocha specs/jeefo_command_specs.js",
-    "test_command_manager": "./node_modules/mocha/bin/mocha specs/jeefo_command_manager_specs.js",
-    "test_options": "./node_modules/mocha/bin/mocha specs/options/*_specs.js",
-    "test_validators": "./node_modules/mocha/bin/mocha specs/validators/*_specs.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/je3f0o/jeefo_command.git"
-  },
-  "keywords": [
-    "cli",
-    "jeefo",
-    "je3f0o",
-    "command",
-    "jeefo_command"
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "mocha": "^5.2.0",
-    "expect": "^23.6.0"
-  }
+    "name": "@jeefo/command",
+    "version": "0.0.2",
+    "description": "Node module designed for create a new command line interface. It will be parse user arguments and execute desired commands with desired options.",
+    "author": {
+        "name": "je3f0o",
+        "email": "je3f0o@gmail.com"
+    },
+    "homepage": "https://github.com/je3f0o/jeefo_command",
+    "license": "MIT",
+    "copyright": "2017",
+    "main": "index.js",
+    "scripts": {
+        "save": "git add . && git c \"`date`\" && git p",
+        "jeefo_publish": "node node_modules/@jeefo/publish/publish.js",
+        "test": "./node_modules/mocha/bin/mocha \"specs/**/*_specs.js\"",
+        "test_command": "./node_modules/mocha/bin/mocha specs/jeefo_command_specs.js",
+        "test_command_manager": "./node_modules/mocha/bin/mocha specs/jeefo_command_manager_specs.js",
+        "test_options": "./node_modules/mocha/bin/mocha specs/options/*_specs.js",
+        "test_validators": "./node_modules/mocha/bin/mocha specs/validators/*_specs.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/je3f0o/jeefo_command.git"
+    },
+    "keywords": [
+        "cli",
+        "jeefo",
+        "je3f0o",
+        "command",
+        "jeefo_command"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "@jeefo/publish": "0.0.31",
+        "expect": "^23.6.0",
+        "mocha": "^5.2.0"
+    }
 }
