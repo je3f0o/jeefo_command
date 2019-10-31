@@ -1,6 +1,6 @@
 {
     "name": "@jeefo/command",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Node module designed for create a new command line interface. It will be parse user arguments and execute desired commands with desired options.",
     "author": {
         "name": "je3f0o",
