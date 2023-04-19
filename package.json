@@ -33,7 +33,7 @@
     "dependencies": {},
     "devDependencies": {
         "@jeefo/publish": "0.0.31",
-        "expect": "^23.6.0",
+        "expect": "^29.5.0",
         "mocha": "^5.2.0"
     }
 }
